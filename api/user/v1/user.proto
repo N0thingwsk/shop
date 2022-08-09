@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+option go_package = "shop/api/user/v1;v1";
+
+service User {
+	rpc GetUserList (PageInfo) returns (UserListResponse) {
+		option (google.api.http) = {
+			get: "/user/getList"
+		};
+	}
+
+	rpc GetUserByMobile (MobileRequest) returns (UserInfoResponse) {
+		option (google.api.http) = {
+			get: "/user/getUser"
+		};
+	}
+
+	rpc GetUserByID (IdRequest) returns (UserInfoResponse) {
+		option (google.api.http) = {
+			get: "/user/getUserId"
+		};
+	}
+
+	rpc CreateUser (CreateUserInfo) returns (UserInfoResponse) {
+		option (google.api.http) = {
+			post: "/user/create",
+			body: "*"
+		};
+	}
+
+	rpc UpdateUser(UpdateUserInfo) returns (google.protobuf.Empty){
+		option (google.api.http) = {
+			post: "/user/update",
+			body: "*"
+		};
+	}
+
+	rpc CheckPassWorld(PassWordCheckInfo) returns (CheckResponse) {
+		option (google.api.http) = {
+			post: "/user/delete",
+			body: "*"
+		};
+	}
+}
+
+message PageInfo {
+	uint32 pn = 1;
+	uint32 p_size = 2;
+}
+
+message MobileRequest {
+	string mobile = 1;
+}
+
+message IdRequest {
+	int32 id = 1;
+}
+
+message CreateUserInfo {
+	string nick_name = 1;
+	string password = 2;
+	string mobile = 3;
+}
+
+message UpdateUserInfo {
+	int32 id = 1;
+	string nice_name = 2;
+	string gender = 3;
+	uint64 birth_day = 4;
+}
+
+message PassWordCheckInfo {
+	string password = 1;
+	string encryptedPassword = 2;
+}
+
+message CheckResponse {
+	bool success = 1;
+}
+
+message UserInfoResponse {
+	int64 id = 1;
+	string password = 2;
+	string mobile = 3;
+	string nick_name = 4;
+	uint64 birth_day = 5;
+	string gender = 6;
+	int32 role = 7;
+}
+
+message UserListResponse {
+	int32 total = 1;
+	repeated UserInfoResponse data = 2;
+}
