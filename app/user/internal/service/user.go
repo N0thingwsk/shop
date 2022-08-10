@@ -10,9 +10,10 @@ import (
 
 type UserService struct {
 	v1.UnimplementedUserServer
-	uc *biz.UserUsecase
+	uc  *biz.UserUsecase
 	log *log.Helper
 }
+
 func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 	return &UserService{uc: uc, log: log.NewHelper(logger)}
 }
@@ -29,8 +30,19 @@ func (u *UserService) GetUserByID(context.Context, *v1.IdRequest) (*v1.UserInfoR
 	return nil, nil
 }
 
-func (u *UserService) CreateUser(context.Context, *v1.CreateUserInfo) (*v1.UserInfoResponse, error) {
-	return nil, nil
+func (u *UserService) CreateUser(ctx context.Context, in *v1.CreateUserInfo) (*v1.UserInfoResponse, error) {
+	user, err := u.uc.CreateUser(ctx, biz.User{
+		Mobile:   in.Mobile,
+		Password: in.Password,
+		NickName: in.NickName,
+	})
+	if err != nil {
+		return &v1.UserInfoResponse{}, err
+	}
+	return &v1.UserInfoResponse{
+		Mobile:   user.Mobile,
+		NickName: user.NickName,
+	}, nil
 }
 
 func (u *UserService) UpdateUser(context.Context, *v1.UpdateUserInfo) (*emptypb.Empty, error) {
