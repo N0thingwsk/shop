@@ -10,7 +10,6 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,153 +19,222 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationUserCheckPassWorld = "/api.user.v1.User/CheckPassWorld"
-const OperationUserCreateUser = "/api.user.v1.User/CreateUser"
-const OperationUserGetUserByID = "/api.user.v1.User/GetUserByID"
-const OperationUserGetUserByMobile = "/api.user.v1.User/GetUserByMobile"
-const OperationUserGetUserList = "/api.user.v1.User/GetUserList"
-const OperationUserUpdateUser = "/api.user.v1.User/UpdateUser"
+const OperationUserDeleteUser = "/api.user.v1.User/DeleteUser"
+const OperationUserGetUser = "/api.user.v1.User/GetUser"
+const OperationUserLoginUser = "/api.user.v1.User/LoginUser"
+const OperationUserRegisterUser = "/api.user.v1.User/RegisterUser"
+const OperationUserSendVerificationCode = "/api.user.v1.User/SendVerificationCode"
+const OperationUserUpdateUserBirthday = "/api.user.v1.User/UpdateUserBirthday"
+const OperationUserUpdateUserGender = "/api.user.v1.User/UpdateUserGender"
+const OperationUserUpdateUserNickName = "/api.user.v1.User/UpdateUserNickName"
+const OperationUserUpdateUserPassword = "/api.user.v1.User/UpdateUserPassword"
 
 type UserHTTPServer interface {
-	CheckPassWorld(context.Context, *PassWordCheckInfo) (*CheckResponse, error)
-	CreateUser(context.Context, *CreateUserInfo) (*UserInfoResponse, error)
-	GetUserByID(context.Context, *IdRequest) (*UserInfoResponse, error)
-	GetUserByMobile(context.Context, *MobileRequest) (*UserInfoResponse, error)
-	GetUserList(context.Context, *PageInfo) (*UserListResponse, error)
-	UpdateUser(context.Context, *UpdateUserInfo) (*emptypb.Empty, error)
+	DeleteUser(context.Context, *DeleteRequest) (*UserInfoReply, error)
+	GetUser(context.Context, *GetUserRequest) (*UserInfoReply, error)
+	LoginUser(context.Context, *LoginRequest) (*LoginReply, error)
+	RegisterUser(context.Context, *RegisterRequest) (*UserInfoReply, error)
+	SendVerificationCode(context.Context, *SendCodeRequest) (*SendCodeReply, error)
+	UpdateUserBirthday(context.Context, *UpdateBirthdayRequest) (*UserInfoReply, error)
+	UpdateUserGender(context.Context, *UpdateGenderRequest) (*UserInfoReply, error)
+	UpdateUserNickName(context.Context, *UpdateNickNameRequest) (*UserInfoReply, error)
+	UpdateUserPassword(context.Context, *UpdatePasswordRequest) (*UserInfoReply, error)
 }
 
 func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user/getList", _User_GetUserList0_HTTP_Handler(srv))
-	r.GET("/user/getUser", _User_GetUserByMobile0_HTTP_Handler(srv))
-	r.GET("/user/getUserId", _User_GetUserByID0_HTTP_Handler(srv))
-	r.POST("/user/create", _User_CreateUser0_HTTP_Handler(srv))
-	r.POST("/user/update", _User_UpdateUser0_HTTP_Handler(srv))
-	r.POST("/user/delete", _User_CheckPassWorld0_HTTP_Handler(srv))
+	r.GET("/v1/user/getuser", _User_GetUser0_HTTP_Handler(srv))
+	r.POST("/v1/user/login", _User_LoginUser0_HTTP_Handler(srv))
+	r.POST("/v1/user/create", _User_RegisterUser0_HTTP_Handler(srv))
+	r.POST("/v1/user/update/nickname", _User_UpdateUserNickName0_HTTP_Handler(srv))
+	r.POST("/v1/user/update/nickname", _User_UpdateUserPassword0_HTTP_Handler(srv))
+	r.POST("/v1/user/update/nickname", _User_UpdateUserBirthday0_HTTP_Handler(srv))
+	r.POST("/v1/user/update/nickname", _User_UpdateUserGender0_HTTP_Handler(srv))
+	r.POST("/v1/user/delete", _User_DeleteUser0_HTTP_Handler(srv))
+	r.POST("/v1/user/sendcode", _User_SendVerificationCode0_HTTP_Handler(srv))
 }
 
-func _User_GetUserList0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+func _User_GetUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in PageInfo
+		var in GetUserRequest
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationUserGetUserList)
+		http.SetOperation(ctx, OperationUserGetUser)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetUserList(ctx, req.(*PageInfo))
+			return srv.GetUser(ctx, req.(*GetUserRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*UserListResponse)
+		reply := out.(*UserInfoReply)
 		return ctx.Result(200, reply)
 	}
 }
 
-func _User_GetUserByMobile0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+func _User_LoginUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in MobileRequest
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationUserGetUserByMobile)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetUserByMobile(ctx, req.(*MobileRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*UserInfoResponse)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _User_GetUserByID0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in IdRequest
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationUserGetUserByID)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetUserByID(ctx, req.(*IdRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*UserInfoResponse)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _User_CreateUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in CreateUserInfo
+		var in LoginRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationUserCreateUser)
+		http.SetOperation(ctx, OperationUserLoginUser)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.CreateUser(ctx, req.(*CreateUserInfo))
+			return srv.LoginUser(ctx, req.(*LoginRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*UserInfoResponse)
+		reply := out.(*LoginReply)
 		return ctx.Result(200, reply)
 	}
 }
 
-func _User_UpdateUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+func _User_RegisterUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in UpdateUserInfo
+		var in RegisterRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationUserUpdateUser)
+		http.SetOperation(ctx, OperationUserRegisterUser)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.UpdateUser(ctx, req.(*UpdateUserInfo))
+			return srv.RegisterUser(ctx, req.(*RegisterRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*emptypb.Empty)
+		reply := out.(*UserInfoReply)
 		return ctx.Result(200, reply)
 	}
 }
 
-func _User_CheckPassWorld0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+func _User_UpdateUserNickName0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in PassWordCheckInfo
+		var in UpdateNickNameRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationUserCheckPassWorld)
+		http.SetOperation(ctx, OperationUserUpdateUserNickName)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.CheckPassWorld(ctx, req.(*PassWordCheckInfo))
+			return srv.UpdateUserNickName(ctx, req.(*UpdateNickNameRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*CheckResponse)
+		reply := out.(*UserInfoReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_UpdateUserPassword0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdatePasswordRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserUpdateUserPassword)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateUserPassword(ctx, req.(*UpdatePasswordRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserInfoReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_UpdateUserBirthday0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateBirthdayRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserUpdateUserBirthday)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateUserBirthday(ctx, req.(*UpdateBirthdayRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserInfoReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_UpdateUserGender0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateGenderRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserUpdateUserGender)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateUserGender(ctx, req.(*UpdateGenderRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserInfoReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_DeleteUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in DeleteRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserDeleteUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DeleteUser(ctx, req.(*DeleteRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserInfoReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_SendVerificationCode0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SendCodeRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserSendVerificationCode)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SendVerificationCode(ctx, req.(*SendCodeRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SendCodeReply)
 		return ctx.Result(200, reply)
 	}
 }
 
 type UserHTTPClient interface {
-	CheckPassWorld(ctx context.Context, req *PassWordCheckInfo, opts ...http.CallOption) (rsp *CheckResponse, err error)
-	CreateUser(ctx context.Context, req *CreateUserInfo, opts ...http.CallOption) (rsp *UserInfoResponse, err error)
-	GetUserByID(ctx context.Context, req *IdRequest, opts ...http.CallOption) (rsp *UserInfoResponse, err error)
-	GetUserByMobile(ctx context.Context, req *MobileRequest, opts ...http.CallOption) (rsp *UserInfoResponse, err error)
-	GetUserList(ctx context.Context, req *PageInfo, opts ...http.CallOption) (rsp *UserListResponse, err error)
-	UpdateUser(ctx context.Context, req *UpdateUserInfo, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	DeleteUser(ctx context.Context, req *DeleteRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
+	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
+	LoginUser(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
+	RegisterUser(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
+	SendVerificationCode(ctx context.Context, req *SendCodeRequest, opts ...http.CallOption) (rsp *SendCodeReply, err error)
+	UpdateUserBirthday(ctx context.Context, req *UpdateBirthdayRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
+	UpdateUserGender(ctx context.Context, req *UpdateGenderRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
+	UpdateUserNickName(ctx context.Context, req *UpdateNickNameRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
+	UpdateUserPassword(ctx context.Context, req *UpdatePasswordRequest, opts ...http.CallOption) (rsp *UserInfoReply, err error)
 }
 
 type UserHTTPClientImpl struct {
@@ -177,11 +245,11 @@ func NewUserHTTPClient(client *http.Client) UserHTTPClient {
 	return &UserHTTPClientImpl{client}
 }
 
-func (c *UserHTTPClientImpl) CheckPassWorld(ctx context.Context, in *PassWordCheckInfo, opts ...http.CallOption) (*CheckResponse, error) {
-	var out CheckResponse
-	pattern := "/user/delete"
+func (c *UserHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteRequest, opts ...http.CallOption) (*UserInfoReply, error) {
+	var out UserInfoReply
+	pattern := "/v1/user/delete"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationUserCheckPassWorld))
+	opts = append(opts, http.Operation(OperationUserDeleteUser))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -190,11 +258,24 @@ func (c *UserHTTPClientImpl) CheckPassWorld(ctx context.Context, in *PassWordChe
 	return &out, err
 }
 
-func (c *UserHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUserInfo, opts ...http.CallOption) (*UserInfoResponse, error) {
-	var out UserInfoResponse
-	pattern := "/user/create"
+func (c *UserHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest, opts ...http.CallOption) (*UserInfoReply, error) {
+	var out UserInfoReply
+	pattern := "/v1/user/getuser"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) LoginUser(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginReply, error) {
+	var out LoginReply
+	pattern := "/v1/user/login"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationUserCreateUser))
+	opts = append(opts, http.Operation(OperationUserLoginUser))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -203,50 +284,76 @@ func (c *UserHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUserInfo,
 	return &out, err
 }
 
-func (c *UserHTTPClientImpl) GetUserByID(ctx context.Context, in *IdRequest, opts ...http.CallOption) (*UserInfoResponse, error) {
-	var out UserInfoResponse
-	pattern := "/user/getUserId"
-	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationUserGetUserByID))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
-func (c *UserHTTPClientImpl) GetUserByMobile(ctx context.Context, in *MobileRequest, opts ...http.CallOption) (*UserInfoResponse, error) {
-	var out UserInfoResponse
-	pattern := "/user/getUser"
-	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationUserGetUserByMobile))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
-func (c *UserHTTPClientImpl) GetUserList(ctx context.Context, in *PageInfo, opts ...http.CallOption) (*UserListResponse, error) {
-	var out UserListResponse
-	pattern := "/user/getList"
-	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationUserGetUserList))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
-func (c *UserHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserInfo, opts ...http.CallOption) (*emptypb.Empty, error) {
-	var out emptypb.Empty
-	pattern := "/user/update"
+func (c *UserHTTPClientImpl) RegisterUser(ctx context.Context, in *RegisterRequest, opts ...http.CallOption) (*UserInfoReply, error) {
+	var out UserInfoReply
+	pattern := "/v1/user/create"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationUserUpdateUser))
+	opts = append(opts, http.Operation(OperationUserRegisterUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) SendVerificationCode(ctx context.Context, in *SendCodeRequest, opts ...http.CallOption) (*SendCodeReply, error) {
+	var out SendCodeReply
+	pattern := "/v1/user/sendcode"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserSendVerificationCode))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) UpdateUserBirthday(ctx context.Context, in *UpdateBirthdayRequest, opts ...http.CallOption) (*UserInfoReply, error) {
+	var out UserInfoReply
+	pattern := "/v1/user/update/nickname"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserUpdateUserBirthday))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) UpdateUserGender(ctx context.Context, in *UpdateGenderRequest, opts ...http.CallOption) (*UserInfoReply, error) {
+	var out UserInfoReply
+	pattern := "/v1/user/update/nickname"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserUpdateUserGender))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) UpdateUserNickName(ctx context.Context, in *UpdateNickNameRequest, opts ...http.CallOption) (*UserInfoReply, error) {
+	var out UserInfoReply
+	pattern := "/v1/user/update/nickname"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserUpdateUserNickName))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) UpdateUserPassword(ctx context.Context, in *UpdatePasswordRequest, opts ...http.CallOption) (*UserInfoReply, error) {
+	var out UserInfoReply
+	pattern := "/v1/user/update/nickname"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserUpdateUserPassword))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

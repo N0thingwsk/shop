@@ -26,11 +26,12 @@ type User struct {
 }
 
 type UserRepo interface {
-	GetUserList(context.Context, int) ([]User, error)
-	GetUserinfoByMobile(context.Context, string) (User, error)
-	GetUserinfoById(context.Context, int) (User, error)
+	GetUserinfo(context.Context, int) (User, error)
 	CreateUser(context.Context, User) (User, error)
-	UpdateUser(context.Context, User) (User, error)
+	UpdateUserNickName(context.Context, User) (User, error)
+	UpdateUserPassword(context.Context, User) (User, error)
+	UpdateUserBirthday(context.Context, User) (User, error)
+	UpdateUserGender(context.Context, User) (User, error)
 	DeleteUser(context.Context, int) (User, error)
 }
 
@@ -51,7 +52,15 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
+func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
+	user, err := u.repo.GetUserinfo(ctx, id)
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
+}
+
+func (u *UserUsecase) RegisterUser(ctx context.Context, user User) (User, error) {
 	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
 	salt, encodedPwd := password.Encode(user.Password, options)
 	newPassword := fmt.Sprintf("$pbkdf2-sha512$%s$%s", salt, encodedPwd)
@@ -67,4 +76,20 @@ func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
 		Mobile:   us.Mobile,
 		NickName: us.NickName,
 	}, nil
+}
+
+func (u *UserUsecase) UpdateUser(ctx context.Context, use User) (User, error) {
+	us, err := u.UpdateUser(ctx, use)
+	if err != nil {
+		return User{}, err
+	}
+	return us, nil
+}
+
+func (u *UserUsecase) DeleteUser(ctx context.Context, id int) (User, error) {
+	us, err := u.DeleteUser(ctx, id)
+	if err != nil {
+		return User{}, err
+	}
+	return us, nil
 }

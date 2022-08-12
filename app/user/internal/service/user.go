@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
-	"google.golang.org/protobuf/types/known/emptypb"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/biz"
 )
@@ -18,37 +17,38 @@ func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 	return &UserService{uc: uc, log: log.NewHelper(logger)}
 }
 
-func (u *UserService) GetUserList(context context.Context, in *v1.PageInfo) (*v1.UserListResponse, error) {
+func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.UserInfoReply, error) {
 	return nil, nil
 }
 
-func (u *UserService) GetUserByMobile(context context.Context, in *v1.MobileRequest) (*v1.UserInfoResponse, error) {
+func (u *UserService) LoginUser(ctx context.Context, in *v1.LoginRequest) (*v1.LoginReply, error) {
 	return nil, nil
 }
 
-func (u *UserService) GetUserByID(context.Context, *v1.IdRequest) (*v1.UserInfoResponse, error) {
+func (u *UserService) RegisterUser(ctx context.Context, in *v1.RegisterRequest) (*v1.UserInfoReply, error) {
 	return nil, nil
 }
 
-func (u *UserService) CreateUser(ctx context.Context, in *v1.CreateUserInfo) (*v1.UserInfoResponse, error) {
-	user, err := u.uc.CreateUser(ctx, biz.User{
-		Mobile:   in.Mobile,
-		Password: in.Password,
-		NickName: in.NickName,
-	})
-	if err != nil {
-		return &v1.UserInfoResponse{}, err
-	}
-	return &v1.UserInfoResponse{
-		Mobile:   user.Mobile,
-		NickName: user.NickName,
-	}, nil
-}
-
-func (u *UserService) UpdateUser(context.Context, *v1.UpdateUserInfo) (*emptypb.Empty, error) {
+func (u *UserService) UpdateUserNickName(ctx context.Context, in *v1.UpdateNickNameRequest) (*v1.UserInfoReply, error) {
 	return nil, nil
 }
 
-func (u *UserService) CheckPassWorld(context.Context, *v1.PassWordCheckInfo) (*v1.CheckResponse, error) {
+func (u *UserService) UpdateUserPassword(ctx context.Context, in *v1.UpdatePasswordRequest) (*v1.UserInfoReply, error) {
+	return nil, nil
+}
+
+func (u *UserService) UpdateUserBirthday(ctx context.Context, in *v1.UpdateBirthdayRequest) (*v1.UserInfoReply, error) {
+	return nil, nil
+}
+
+func (u *UserService) UpdateUserGender(ctx context.Context, in *v1.UpdateGenderRequest) (*v1.UserInfoReply, error) {
+	return nil, nil
+}
+
+func (u *UserService) DeleteUser(ctx context.Context, in *v1.DeleteRequest) (*v1.UserInfoReply, error) {
+	return nil, nil
+}
+
+func (u *UserService) SendVerificationCode(ctx context.Context, in *v1.SendCodeRequest) (*v1.SendCodeReply, error) {
 	return nil, nil
 }

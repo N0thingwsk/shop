@@ -6,16 +6,16 @@ info:
     title: User API
     version: 0.0.1
 paths:
-    /user/create:
+    /v1/user/create:
         post:
             tags:
                 - User
-            operationId: User_CreateUser
+            operationId: User_RegisterUser
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.user.v1.CreateUserInfo'
+                            $ref: '#/components/schemas/api.user.v1.RegisterRequest'
                 required: true
             responses:
                 "200":
@@ -23,17 +23,17 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.user.v1.UserInfoResponse'
-    /user/delete:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
+    /v1/user/delete:
         post:
             tags:
                 - User
-            operationId: User_CheckPassWorld
+            operationId: User_DeleteUser
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.user.v1.PassWordCheckInfo'
+                            $ref: '#/components/schemas/api.user.v1.DeleteRequest'
                 required: true
             responses:
                 "200":
@@ -41,37 +41,14 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.user.v1.CheckResponse'
-    /user/getList:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
+    /v1/user/getuser:
         get:
             tags:
                 - User
-            operationId: User_GetUserList
+            operationId: User_GetUser
             parameters:
-                - name: pn
-                  in: query
-                  schema:
-                    type: integer
-                    format: uint32
-                - name: pSize
-                  in: query
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.user.v1.UserListResponse'
-    /user/getUser:
-        get:
-            tags:
-                - User
-            operationId: User_GetUserByMobile
-            parameters:
-                - name: mobile
+                - name: user.token
                   in: query
                   schema:
                     type: string
@@ -81,105 +58,209 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.user.v1.UserInfoResponse'
-    /user/getUserId:
-        get:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
+    /v1/user/login:
+        post:
             tags:
                 - User
-            operationId: User_GetUserByID
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
+            operationId: User_LoginUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.LoginRequest'
+                required: true
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.user.v1.UserInfoResponse'
-    /user/update:
+                                $ref: '#/components/schemas/api.user.v1.LoginReply'
+    /v1/user/sendcode:
         post:
             tags:
                 - User
-            operationId: User_UpdateUser
+            operationId: User_SendVerificationCode
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.user.v1.UpdateUserInfo'
+                            $ref: '#/components/schemas/api.user.v1.SendCodeRequest'
                 required: true
             responses:
                 "200":
                     description: OK
-                    content: {}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.SendCodeReply'
+    /v1/user/update/nickname:
+        post:
+            tags:
+                - User
+            operationId: User_UpdateUserGender
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.UpdateGenderRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
 components:
     schemas:
-        api.user.v1.CheckResponse:
+        api.user.v1.DeleteRequest:
             type: object
             properties:
-                success:
-                    type: boolean
-        api.user.v1.CreateUserInfo:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.DeleteRequest_User'
+        api.user.v1.DeleteRequest_User:
             type: object
             properties:
-                nickName:
+                token:
                     type: string
-                password:
+        api.user.v1.LoginReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.LoginReply_User'
+                token:
                     type: string
+        api.user.v1.LoginReply_User:
+            type: object
+            properties:
                 mobile:
                     type: string
-        api.user.v1.PassWordCheckInfo:
+                nikeName:
+                    type: string
+        api.user.v1.LoginRequest:
             type: object
             properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.LoginRequest_User'
+        api.user.v1.LoginRequest_User:
+            type: object
+            properties:
+                mobile:
+                    type: string
                 password:
                     type: string
-                encryptedPassword:
+                code:
                     type: string
-        api.user.v1.UpdateUserInfo:
+        api.user.v1.RegisterRequest:
             type: object
             properties:
-                id:
-                    type: integer
-                    format: int32
-                niceName:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.RegisterRequest_User'
+        api.user.v1.RegisterRequest_User:
+            type: object
+            properties:
+                mobile:
+                    type: string
+                password:
+                    type: string
+                code:
+                    type: string
+        api.user.v1.SendCodeReply:
+            type: object
+            properties:
+                code:
+                    type: string
+        api.user.v1.SendCodeRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.SendCodeRequest_User'
+        api.user.v1.SendCodeRequest_User:
+            type: object
+            properties:
+                mobile:
+                    type: string
+        api.user.v1.UpdateBirthdayRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.UpdateBirthdayRequest_User'
+        api.user.v1.UpdateBirthdayRequest_User:
+            type: object
+            properties:
+                token:
+                    type: string
+                nikeName:
+                    type: string
+                birthday:
                     type: string
                 gender:
                     type: string
-                birthDay:
-                    type: integer
-                    format: uint64
-        api.user.v1.UserInfoResponse:
+        api.user.v1.UpdateGenderRequest:
             type: object
             properties:
-                id:
-                    type: integer
-                    format: int64
-                password:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.UpdateGenderRequest_User'
+        api.user.v1.UpdateGenderRequest_User:
+            type: object
+            properties:
+                token:
                     type: string
-                mobile:
+                nikeName:
                     type: string
-                nickName:
+                birthday:
                     type: string
-                birthDay:
-                    type: integer
-                    format: uint64
                 gender:
                     type: string
-                role:
-                    type: integer
-                    format: int32
-        api.user.v1.UserListResponse:
+        api.user.v1.UpdateNickNameRequest:
             type: object
             properties:
-                total:
-                    type: integer
-                    format: int32
-                data:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.user.v1.UserInfoResponse'
+                user:
+                    $ref: '#/components/schemas/api.user.v1.UpdateNickNameRequest_User'
+        api.user.v1.UpdateNickNameRequest_User:
+            type: object
+            properties:
+                token:
+                    type: string
+                nikeName:
+                    type: string
+                birthday:
+                    type: string
+                gender:
+                    type: string
+        api.user.v1.UpdatePasswordRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.UpdatePasswordRequest_User'
+        api.user.v1.UpdatePasswordRequest_User:
+            type: object
+            properties:
+                token:
+                    type: string
+                nikeName:
+                    type: string
+                birthday:
+                    type: string
+                gender:
+                    type: string
+        api.user.v1.UserInfoReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.UserInfoReply_User'
+        api.user.v1.UserInfoReply_User:
+            type: object
+            properties:
+                mobile:
+                    type: string
+                nikeName:
+                    type: string
+                birthday:
+                    type: string
+                gender:
+                    type: string
 tags:
     - name: User

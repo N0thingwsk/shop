@@ -2,98 +2,170 @@ syntax = "proto3";
 
 package api.user.v1;
 
-import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
 
 option go_package = "shop/api/user/v1;v1";
 
 service User {
-	rpc GetUserList (PageInfo) returns (UserListResponse) {
+
+	rpc GetUser (GetUserRequest) returns (UserInfoReply) {
 		option (google.api.http) = {
-			get: "/user/getList"
+			get: "/v1/user/getuser"
 		};
 	}
 
-	rpc GetUserByMobile (MobileRequest) returns (UserInfoResponse) {
+	rpc LoginUser (LoginRequest) returns (LoginReply) {
 		option (google.api.http) = {
-			get: "/user/getUser"
-		};
-	}
-
-	rpc GetUserByID (IdRequest) returns (UserInfoResponse) {
-		option (google.api.http) = {
-			get: "/user/getUserId"
-		};
-	}
-
-	rpc CreateUser (CreateUserInfo) returns (UserInfoResponse) {
-		option (google.api.http) = {
-			post: "/user/create",
+			post: "/v1/user/login",
 			body: "*"
 		};
 	}
 
-	rpc UpdateUser(UpdateUserInfo) returns (google.protobuf.Empty){
+	rpc RegisterUser (RegisterRequest) returns (UserInfoReply) {
 		option (google.api.http) = {
-			post: "/user/update",
+			post: "/v1/user/create",
 			body: "*"
 		};
 	}
 
-	rpc CheckPassWorld(PassWordCheckInfo) returns (CheckResponse) {
+	rpc UpdateUserNickName(UpdateNickNameRequest) returns (UserInfoReply){
 		option (google.api.http) = {
-			post: "/user/delete",
+			post: "/v1/user/update/nickname",
+			body: "*"
+		};
+	}
+	rpc UpdateUserPassword(UpdatePasswordRequest) returns (UserInfoReply){
+		option (google.api.http) = {
+			post: "/v1/user/update/nickname",
+			body: "*"
+		};
+	}
+	rpc UpdateUserBirthday(UpdateBirthdayRequest) returns (UserInfoReply){
+		option (google.api.http) = {
+			post: "/v1/user/update/nickname",
+			body: "*"
+		};
+	}
+	rpc UpdateUserGender(UpdateGenderRequest) returns (UserInfoReply){
+		option (google.api.http) = {
+			post: "/v1/user/update/nickname",
+			body: "*"
+		};
+	}
+
+	rpc DeleteUser(DeleteRequest) returns (UserInfoReply){
+		option (google.api.http) = {
+			post: "/v1/user/delete",
+			body: "*"
+		};
+	}
+
+	rpc SendVerificationCode(SendCodeRequest) returns (SendCodeReply) {
+		option (google.api.http) = {
+			post: "/v1/user/sendcode",
 			body: "*"
 		};
 	}
 }
 
-message PageInfo {
-	uint32 pn = 1;
-	uint32 p_size = 2;
+message GetUserRequest {
+	message User {
+		string token = 1;
+	}
+	User user = 1;
 }
 
-message MobileRequest {
-	string mobile = 1;
+message LoginRequest {
+	message User {
+		string mobile = 1;
+		string password = 2;
+		string code = 3;
+	}
+	User user = 1;
 }
 
-message IdRequest {
-	int32 id = 1;
+message RegisterRequest {
+	message User {
+		string mobile = 1;
+		string password = 2;
+		string code= 3;
+	}
+	User user = 1;
 }
 
-message CreateUserInfo {
-	string nick_name = 1;
-	string password = 2;
-	string mobile = 3;
+message UpdateGenderRequest {
+	message User {
+		string token = 1;
+		string nike_name = 2;
+		string birthday = 3;
+		string gender = 4;
+	}
+	User user = 1;
 }
 
-message UpdateUserInfo {
-	int32 id = 1;
-	string nice_name = 2;
-	string gender = 3;
-	uint64 birth_day = 4;
+message UpdatePasswordRequest {
+	message User {
+		string token = 1;
+		string nike_name = 2;
+		string birthday = 3;
+		string gender = 4;
+	}
+	User user = 1;
 }
 
-message PassWordCheckInfo {
-	string password = 1;
-	string encryptedPassword = 2;
+message UpdateNickNameRequest {
+	message User {
+		string token = 1;
+		string nike_name = 2;
+		string birthday = 3;
+		string gender = 4;
+	}
+	User user = 1;
 }
 
-message CheckResponse {
-	bool success = 1;
+message UpdateBirthdayRequest {
+	message User {
+		string token = 1;
+		string nike_name = 2;
+		string birthday = 3;
+		string gender = 4;
+	}
+	User user = 1;
 }
 
-message UserInfoResponse {
-	int64 id = 1;
-	string password = 2;
-	string mobile = 3;
-	string nick_name = 4;
-	uint64 birth_day = 5;
-	string gender = 6;
-	int32 role = 7;
+message DeleteRequest {
+	message User {
+		string token = 1;
+	}
+	User user = 1;
 }
 
-message UserListResponse {
-	int32 total = 1;
-	repeated UserInfoResponse data = 2;
+message SendCodeRequest {
+	message User {
+		string mobile = 1;
+	}
+	User user = 1;
+}
+
+message SendCodeReply {
+	string code = 1;
+}
+
+message LoginReply {
+	message User {
+		string mobile = 1;
+		string nike_name = 2;
+	}
+	User user = 1;
+	string token = 2;
+}
+
+message UserInfoReply {
+	message User {
+		string mobile = 1;
+		string nike_name = 2;
+		string birthday = 3;
+		string gender = 4;
+	}
+	User user = 1;
 }

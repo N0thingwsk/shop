@@ -36,3 +36,7 @@ func NewDB(c *conf.Data) *gorm.DB {
 	}
 	return db
 }
+
+func NewRedis() {
+
+}
