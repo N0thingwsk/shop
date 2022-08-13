@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"crypto/sha512"
+	"errors"
 	"fmt"
 	"github.com/anaskhan96/go-password-encoder"
 	"github.com/go-kratos/kratos/v2/log"
@@ -42,14 +43,6 @@ type UserUsecase struct {
 	log  *log.Helper
 }
 
-//func Test(pass1, pass2 string, options *password.Options) bool {
-//	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
-//	salt, encodedPwd := password.Encode(use.Password, options)
-//	newPassword := fmt.Sprintf("$pbkdf2-sha512$%s$%s", salt, encodedPwd)
-//	passwordInfo := strings.Split(pass1, "$")
-//	return password.Verify(pass2, passwordInfo[2], passwordInfo[3], options)
-//}
-
 func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
 }
@@ -62,14 +55,20 @@ func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
 	return user, nil
 }
 
-func (u *UserUsecase) LoginUser(ctx context.Context, user User) (User, error) {
+func (u *UserUsecase) LoginUser(ctx context.Context, user User) (string, error) {
 	use, err := u.repo.LoginUser(ctx, user)
 	if err != nil {
-		return User{}, err
+		return "", err
 	}
 	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
 	passwordInfo := strings.Split(use.Password, "$")
 	isPass := password.Verify(user.Password, passwordInfo[2], passwordInfo[3], options)
+	if isPass != true {
+		return "", errors.New("密码错误")
+	} else {
+		//TODO jwt
+	}
+	return "", nil
 }
 
 func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
@@ -91,19 +90,19 @@ func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
 }
 
 func (u *UserUsecase) UpdateUserNickName(context.Context, User) (User, error) {
-
+	return User{}, nil
 }
 
 func (u *UserUsecase) UpdateUserPassword(context.Context, User) (User, error) {
-
+	return User{}, nil
 }
 
 func (u *UserUsecase) UpdateUserBirthday(context.Context, User) (User, error) {
-
+	return User{}, nil
 }
 
 func (u *UserUsecase) UpdateUserGender(context.Context, User) (User, error) {
-
+	return User{}, nil
 }
 
 func (u *UserUsecase) DeleteUser(ctx context.Context, id int) (User, error) {
