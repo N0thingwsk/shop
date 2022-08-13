@@ -33,6 +33,18 @@ func (r *userRepo) GetUserinfo(ctx context.Context, id int) (biz.User, error) {
 	return user, nil
 }
 
+func (r *userRepo) LoginUser(ctx context.Context, use biz.User) (biz.User, error) {
+	var user biz.User
+	result := r.data.db.Where("mobile = ?", use.Mobile).First(&user)
+	if result.RowsAffected == 0 {
+		return biz.User{}, errors.New("用户不存在")
+	}
+	if result.Error != nil {
+		return biz.User{}, errors.New("登录失败")
+	}
+	return user, nil
+}
+
 func (r *userRepo) CreateUser(ctx context.Context, use biz.User) (biz.User, error) {
 	result := r.data.db.Where("mobile = ?", use.Mobile).First(&use)
 	if result.RowsAffected == 1 {

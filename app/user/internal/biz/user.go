@@ -7,6 +7,7 @@ import (
 	"github.com/anaskhan96/go-password-encoder"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -27,6 +28,7 @@ type User struct {
 
 type UserRepo interface {
 	GetUserinfo(context.Context, int) (User, error)
+	LoginUser(context.Context, User) (User, error)
 	CreateUser(context.Context, User) (User, error)
 	UpdateUserNickName(context.Context, User) (User, error)
 	UpdateUserPassword(context.Context, User) (User, error)
@@ -60,7 +62,17 @@ func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
 	return user, nil
 }
 
-func (u *UserUsecase) RegisterUser(ctx context.Context, user User) (User, error) {
+func (u *UserUsecase) LoginUser(ctx context.Context, user User) (User, error) {
+	use, err := u.repo.LoginUser(ctx, user)
+	if err != nil {
+		return User{}, err
+	}
+	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
+	passwordInfo := strings.Split(use.Password, "$")
+	isPass := password.Verify(user.Password, passwordInfo[2], passwordInfo[3], options)
+}
+
+func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
 	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
 	salt, encodedPwd := password.Encode(user.Password, options)
 	newPassword := fmt.Sprintf("$pbkdf2-sha512$%s$%s", salt, encodedPwd)
@@ -78,12 +90,20 @@ func (u *UserUsecase) RegisterUser(ctx context.Context, user User) (User, error)
 	}, nil
 }
 
-func (u *UserUsecase) UpdateUser(ctx context.Context, use User) (User, error) {
-	us, err := u.UpdateUser(ctx, use)
-	if err != nil {
-		return User{}, err
-	}
-	return us, nil
+func (u *UserUsecase) UpdateUserNickName(context.Context, User) (User, error) {
+
+}
+
+func (u *UserUsecase) UpdateUserPassword(context.Context, User) (User, error) {
+
+}
+
+func (u *UserUsecase) UpdateUserBirthday(context.Context, User) (User, error) {
+
+}
+
+func (u *UserUsecase) UpdateUserGender(context.Context, User) (User, error) {
+
 }
 
 func (u *UserUsecase) DeleteUser(ctx context.Context, id int) (User, error) {
