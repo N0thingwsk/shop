@@ -2,6 +2,8 @@ package biz
 
 import (
 	"context"
+	"database/sql/driver"
+	"encoding/json"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -11,6 +13,16 @@ import (
 var (
 	ErrUserNotFound = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
 )
+
+type GormList []string
+
+func (g GormList) Value() (driver.Value, error) {
+	return json.Marshal(g)
+}
+
+func (g *GormList) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &g)
+}
 
 type Category struct {
 	gorm.Model
@@ -48,21 +60,21 @@ type Goods struct {
 	Category        Category
 	BrandsID        int32 `gorm:"type:int;index:idx_category_brand,unique"`
 	Brands          Brands
-	OnSale          bool    `gorm:"default:false;not null"`
-	ShipFree        bool    `gorm:"default;false;not null"`
-	IsNew           bool    `gorm:"default;false;not null"`
-	IsHot           bool    `gorm:"default;false;not null"`
-	Name            string  `gorm:"type:varchar(50);not null"`
-	GoodsSn         string  `gorm:"type:varchar(50);not null"`
-	ChickNum        int32   `gorm:"type:int;default:0;not null"`
-	SoldNum         int32   `gorm:"type:int;default:0;not null"`
-	FavNum          int32   `gorm:"type:int;default:0;not null"`
-	MarketPrice     float32 `gorm:"not null"`
-	ShopPrice       float32 `gorm:"not null"`
-	GoodsBrief      string  `gorm:"type:varchar(50);not null"`
-	Images          []string
-	DescImages      []string
-	GoodsFrontImage string `gorm:"type:varchar(200);not null"`
+	OnSale          bool     `gorm:"default:false;not null"`
+	ShipFree        bool     `gorm:"default;false;not null"`
+	IsNew           bool     `gorm:"default;false;not null"`
+	IsHot           bool     `gorm:"default;false;not null"`
+	Name            string   `gorm:"type:varchar(50);not null"`
+	GoodsSn         string   `gorm:"type:varchar(50);not null"`
+	ChickNum        int32    `gorm:"type:int;default:0;not null"`
+	SoldNum         int32    `gorm:"type:int;default:0;not null"`
+	FavNum          int32    `gorm:"type:int;default:0;not null"`
+	MarketPrice     float32  `gorm:"not null"`
+	ShopPrice       float32  `gorm:"not null"`
+	GoodsBrief      string   `gorm:"type:varchar(50);not null"`
+	Images          GormList `gorm:"type:varchar(1000);not null"`
+	DescImages      GormList `gorm:"type:varchar(1000);not null"`
+	GoodsFrontImage string   `gorm:"type:varchar(200);not null"`
 }
 
 type GoodsRepo interface {
