@@ -2,27 +2,24 @@ syntax = "proto3";
 
 package api.goods.v1;
 
+import "google.protobuf.Empty";
+
 option go_package = "shop/api/goods/v1;v1";
 
 service Goods {
-	rpc CreateGoods (CreateGoodsRequest) returns (CreateGoodsReply);
-	rpc UpdateGoods (UpdateGoodsRequest) returns (UpdateGoodsReply);
-	rpc DeleteGoods (DeleteGoodsRequest) returns (DeleteGoodsReply);
-	rpc GetGoods (GetGoodsRequest) returns (GetGoodsReply);
-	rpc ListGoods (ListGoodsRequest) returns (ListGoodsReply);
+	rpc GoodsList() returns ();
+	rpc BatchGetGoods() returns ()
+	rpc CreateGoods() returns ()
+	rpc DeleteGoods() returns ()
+	rpc UpdateGoods() returns ()
+	rpc GetGoodsDetail() returns ()
+	rpc GetAllCategoryList() returns()
+	rpc GetSubCategory() returns ()
+	rpc CreateCategory() returns ()
+	rpc DeleteCategory() returns ()
+	rpc UpdateCategory() returns ()
+	rpc BrandList() returns ()
+	rpc CreateBrand() returns ()
+	rpc UpdateBrand() returns ()
+	rpc DeleteBrand() returns ()
 }
-
-message CreateGoodsRequest {}
-message CreateGoodsReply {}
-
-message UpdateGoodsRequest {}
-message UpdateGoodsReply {}
-
-message DeleteGoodsRequest {}
-message DeleteGoodsReply {}
-
-message GetGoodsRequest {}
-message GetGoodsReply {}
-
-message ListGoodsRequest {}
-message ListGoodsReply {}

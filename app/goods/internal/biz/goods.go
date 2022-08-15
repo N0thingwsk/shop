@@ -27,7 +27,7 @@ func (g *GormList) Scan(value interface{}) error {
 type Category struct {
 	gorm.Model
 	Name             string `gorm:"type:varchar(20);not null"`
-	ParentCategoryID int32
+	ParentCategoryID uint
 	ParentCategory   *Category
 	Level            int32 `gorm:"type:int;not null;default:1"`
 	IsTab            bool  `gorm:"default:false;not null"`
@@ -41,10 +41,14 @@ type Brands struct {
 
 type GoodsCategoryBrand struct {
 	gorm.Model
-	CategoryID int32 `gorm:"type:int;index:idx_category_brand,unique"`
+	CategoryID uint `gorm:"type:int;index:idx_category_brand,unique"`
 	Category   Category
-	BrandsID   int32 `gorm:"type:int;index:idx_category_brand,unique"`
+	BrandsID   uint `gorm:"type:int;index:idx_category_brand,unique"`
 	Brands     Brands
+}
+
+func (g GoodsCategoryBrand) TableName() string {
+	return "goodscategorybrand"
 }
 
 type Banner struct {
@@ -56,14 +60,14 @@ type Banner struct {
 
 type Goods struct {
 	gorm.Model
-	CategoryID      int32 `gorm:"type:int;index:idx_category_brand,unique"`
+	CategoryID      uint `gorm:"type:int;not null"`
 	Category        Category
-	BrandsID        int32 `gorm:"type:int;index:idx_category_brand,unique"`
+	BrandsID        uint `gorm:"type:int;not null"`
 	Brands          Brands
 	OnSale          bool     `gorm:"default:false;not null"`
-	ShipFree        bool     `gorm:"default;false;not null"`
-	IsNew           bool     `gorm:"default;false;not null"`
-	IsHot           bool     `gorm:"default;false;not null"`
+	ShipFree        bool     `gorm:"default:false;not null"`
+	IsNew           bool     `gorm:"default:false;not null"`
+	IsHot           bool     `gorm:"default:false;not null"`
 	Name            string   `gorm:"type:varchar(50);not null"`
 	GoodsSn         string   `gorm:"type:varchar(50);not null"`
 	ChickNum        int32    `gorm:"type:int;default:0;not null"`
@@ -71,7 +75,7 @@ type Goods struct {
 	FavNum          int32    `gorm:"type:int;default:0;not null"`
 	MarketPrice     float32  `gorm:"not null"`
 	ShopPrice       float32  `gorm:"not null"`
-	GoodsBrief      string   `gorm:"type:varchar(50);not null"`
+	GoodsBrief      string   `gorm:"type:varchar(100);not null"`
 	Images          GormList `gorm:"type:varchar(1000);not null"`
 	DescImages      GormList `gorm:"type:varchar(1000);not null"`
 	GoodsFrontImage string   `gorm:"type:varchar(200);not null"`
