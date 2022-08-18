@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -17,5 +18,20 @@ func TestGrom(t *testing.T) {
 	if err != nil {
 		panic(err.Error())
 	}
-	db.AutoMigrate(&biz.Inventory{})
+	for i := 0; i <= 10; i++ {
+		db.Create(&biz.Inventory{
+			Goods:  int32(i),
+			Stocks: int32(i),
+		})
+	}
+}
+
+func TS(i int) int {
+	i++
+	return i
+}
+
+func TestTS(t *testing.T) {
+	num := TS(1)
+	fmt.Println(num)
 }

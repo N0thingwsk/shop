@@ -2,15 +2,8 @@ package biz
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
-	v1 "shop/api/user/v1"
-)
-
-var (
-	// ErrUserNotFound is user not found.
-	ErrUserNotFound = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
 )
 
 type Inventory struct {
@@ -29,6 +22,11 @@ type InventoryHistory struct {
 }
 
 type InventoryRepo interface {
+	GetInventory(context.Context, Inventory) (Inventory, error)
+	CreateInventory(context.Context, Inventory) error
+	UpdateInventory(context.Context, Inventory) error
+	DeleteInventory(context.Context, Inventory) error
+	SellInventory(context.Context, []Inventory) error
 }
 
 type InventoryUsecase struct {
@@ -40,7 +38,38 @@ func NewInventoryUsecase(repo InventoryRepo, logger log.Logger) *InventoryUsecas
 	return &InventoryUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-// CreateGreeter creates a Greeter, and returns the new Greeter.
-func (ic *InventoryUsecase) CreateGreeter(ctx context.Context, g *Inventory) (*Inventory, error) {
-	return nil, nil
+func (i *InventoryUsecase) InvDetail(ctx context.Context, inv Inventory) (Inventory, error) {
+	result, err := i.repo.GetInventory(ctx, inv)
+	if err != nil {
+		return Inventory{}, err
+	}
+	return result, nil
+}
+
+func (i *InventoryUsecase) SetInv(ctx context.Context, inv Inventory) error {
+	_, err := i.repo.GetInventory(ctx, inv)
+	if err != nil {
+		return err
+	}
+	err = i.repo.UpdateInventory(ctx, inv)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *InventoryUsecase) Sell(ctx context.Context, inv []Inventory) error {
+	err := i.Sell(ctx, inv)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *InventoryUsecase) ReBack(ctx context.Context, inv []Inventory) error {
+	err := i.ReBack(ctx, inv)
+	if err != nil {
+		return err
+	}
+	return nil
 }

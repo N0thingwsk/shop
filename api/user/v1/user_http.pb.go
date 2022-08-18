@@ -43,7 +43,7 @@ type UserHTTPServer interface {
 
 func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r := s.Route("/")
-	r.GET("/v1/user/getuser", _User_GetUser0_HTTP_Handler(srv))
+	r.POST("/v1/user/getuser", _User_GetUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/login", _User_LoginUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/create", _User_RegisterUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/update/nickname", _User_UpdateUserNickName0_HTTP_Handler(srv))
@@ -57,7 +57,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 func _User_GetUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetUserRequest
-		if err := ctx.BindQuery(&in); err != nil {
+		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationUserGetUser)
@@ -261,10 +261,10 @@ func (c *UserHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteRequest, 
 func (c *UserHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest, opts ...http.CallOption) (*UserInfoReply, error) {
 	var out UserInfoReply
 	pattern := "/v1/user/getuser"
-	path := binding.EncodeURL(pattern, in, true)
+	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserGetUser))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

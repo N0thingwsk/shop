@@ -10,7 +10,8 @@ service User {
 
 	rpc GetUser (GetUserRequest) returns (UserInfoReply) {
 		option (google.api.http) = {
-			get: "/v1/user/getuser"
+			post: "/v1/user/getuser"
+			body: "*"
 		};
 	}
 

@@ -3,19 +3,25 @@ syntax = "proto3";
 package api.inventory.v1;
 
 import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
 
 option go_package = "shop/api/inventory/v1;v1";
 
 service Inventory {
 	rpc SetInv(GoodsInvInfo) returns (google.protobuf.Empty);
-	rpc InvDetail (GoodsInvInfo) returns (GoodsInvInfo);
+	rpc InvDetail (GoodsInvInfo) returns (GoodsInvInfo) {
+		option (google.api.http) = {
+			post: "/v1/inventory/getinventory"
+			body: "*"
+		};
+	}
 	rpc Sell(SellInfo) returns (google.protobuf.Empty);
 	rpc ReBack(SellInfo) returns (google.protobuf.Empty);
 }
 
 message GoodsInvInfo {
-	int32 goodsId = 1;
-	int32 num = 2;
+	int32 id = 1;
+	int32 stocks = 2;
 }
 
 message SellInfo {
