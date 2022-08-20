@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
+	"github.com/hashicorp/consul/api"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -19,7 +21,7 @@ var (
 	// Name is the name of the compiled software.
 	Name string = "user"
 	// Version is the version of the compiled software.
-	Version string = "v1"
+	Version string = "1.0.0"
 	// flagconf is the config flag.
 	flagconf string
 
@@ -31,6 +33,11 @@ func init() {
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+	client, err := api.NewClient(api.DefaultConfig())
+	if err != nil {
+		panic(err)
+	}
+	reg := consul.New(client)
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -41,6 +48,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 			gs,
 			hs,
 		),
+		kratos.Registrar(reg),
 	)
 }
 

@@ -27,6 +27,7 @@ type InventoryRepo interface {
 	UpdateInventory(context.Context, Inventory) error
 	DeleteInventory(context.Context, Inventory) error
 	SellInventory(context.Context, []Inventory) error
+	ReBackInventory(context.Context, []Inventory) error
 }
 
 type InventoryUsecase struct {
@@ -38,7 +39,7 @@ func NewInventoryUsecase(repo InventoryRepo, logger log.Logger) *InventoryUsecas
 	return &InventoryUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (i *InventoryUsecase) InvDetail(ctx context.Context, inv Inventory) (Inventory, error) {
+func (i *InventoryUsecase) GetInventory(ctx context.Context, inv Inventory) (Inventory, error) {
 	result, err := i.repo.GetInventory(ctx, inv)
 	if err != nil {
 		return Inventory{}, err
@@ -46,7 +47,15 @@ func (i *InventoryUsecase) InvDetail(ctx context.Context, inv Inventory) (Invent
 	return result, nil
 }
 
-func (i *InventoryUsecase) SetInv(ctx context.Context, inv Inventory) error {
+func (i *InventoryUsecase) CreateInventory(ctx context.Context, inv Inventory) (Inventory, error) {
+	err := i.repo.CreateInventory(ctx, inv)
+	if err != nil {
+		return Inventory{}, err
+	}
+	return inv, nil
+}
+
+func (i *InventoryUsecase) SetInventory(ctx context.Context, inv Inventory) error {
 	_, err := i.repo.GetInventory(ctx, inv)
 	if err != nil {
 		return err
@@ -58,16 +67,16 @@ func (i *InventoryUsecase) SetInv(ctx context.Context, inv Inventory) error {
 	return nil
 }
 
-func (i *InventoryUsecase) Sell(ctx context.Context, inv []Inventory) error {
-	err := i.Sell(ctx, inv)
+func (i *InventoryUsecase) SellInventory(ctx context.Context, inv []Inventory) error {
+	err := i.repo.SellInventory(ctx, inv)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (i *InventoryUsecase) ReBack(ctx context.Context, inv []Inventory) error {
-	err := i.ReBack(ctx, inv)
+func (i *InventoryUsecase) ReBackInventory(ctx context.Context, inv []Inventory) error {
+	err := i.repo.ReBackInventory(ctx, inv)
 	if err != nil {
 		return err
 	}

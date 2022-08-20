@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"shop/app/inventory/internal/biz"
 )
@@ -24,24 +25,33 @@ func (i *inventoryRepo) GetInventory(ctx context.Context, inv biz.Inventory) (bi
 	if result.Error != nil {
 		return biz.Inventory{}, result.Error
 	} else if result.RowsAffected == 0 {
-		return biz.Inventory{}, errors.New("未查询到库存")
+		return biz.Inventory{}, errors.New("未查询到库存记录")
 	}
 	return inv, nil
 }
 
-func (i *inventoryRepo) CreateInventory(context.Context, biz.Inventory) error {
-	return nil
-}
-
-func (i *inventoryRepo) UpdateInventory(ctx context.Context, inv biz.Inventory) error {
-	result := i.data.db.Save(&inv)
+func (i *inventoryRepo) CreateInventory(ctx context.Context, inv biz.Inventory) error {
+	result := i.data.db.Create(&inv)
 	if result.Error != nil {
-		return errors.New("更新库存失败")
+		return errors.New("创建库存记录失败")
 	}
 	return nil
 }
 
-func (i *inventoryRepo) DeleteInventory(context.Context, biz.Inventory) error {
+func (i *inventoryRepo) UpdateInventory(ctx context.Context, inv biz.Inventory) error {
+	fmt.Println(inv)
+	result := i.data.db.Model(&biz.Inventory{}).Where("goods = ?", inv.Goods).Update("stocks", inv.Stocks)
+	if result.Error != nil {
+		return errors.New("更新库存记录失败:" + result.Error.Error())
+	}
+	return nil
+}
+
+func (i *inventoryRepo) DeleteInventory(ctx context.Context, inv biz.Inventory) error {
+	result := i.data.db.Where("goods = ?", inv.Goods).Delete(&inv)
+	if result.Error != nil {
+		return errors.New("删除库存记录失败")
+	}
 	return nil
 }
 

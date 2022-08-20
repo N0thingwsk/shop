@@ -2,8 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
-	"github.com/hashicorp/consul/api"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -13,15 +11,15 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"shop/app/inventory/internal/conf"
+	"shop/app/test/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string = "inventory"
+	Name string
 	// Version is the version of the compiled software.
-	Version string = "1.0.0"
+	Version string
 	// flagconf is the config flag.
 	flagconf string
 
@@ -33,11 +31,6 @@ func init() {
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
-	client, err := api.NewClient(api.DefaultConfig())
-	if err != nil {
-		panic(err)
-	}
-	reg := consul.New(client)
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -48,7 +41,6 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 			gs,
 			hs,
 		),
-		kratos.Registrar(reg),
 	)
 }
 

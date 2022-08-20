@@ -1,10 +1,16 @@
 package test
 
 import (
+	"context"
 	"fmt"
+	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
+	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/hashicorp/consul/api"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+	v1 "shop/api/inventory/v1"
 	"shop/app/inventory/internal/biz"
 	"testing"
 )
@@ -26,12 +32,55 @@ func TestGrom(t *testing.T) {
 	}
 }
 
-func TS(i int) int {
-	i++
-	return i
-}
+func TestConsul(t *testing.T) {
+	consulCli, err := api.NewClient(api.DefaultConfig())
+	if err != nil {
+		panic(err)
+	}
+	r := consul.New(consulCli)
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		grpc.WithEndpoint("discovery:///inventory"),
+		grpc.WithDiscovery(r),
+	)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer conn.Close()
+	c := v1.NewInventoryClient(conn)
+	detail, err := c.ReBack(context.Background(), &v1.SellInfo{
+		GoodsInfo: []*v1.GoodsInvInfo{
+			{Id: 1, Stocks: 10},
+		},
+	})
+	if err != nil {
+		log.Error(err.Error())
+	}
+	fmt.Println(detail)
 
-func TestTS(t *testing.T) {
-	num := TS(1)
-	fmt.Println(num)
+	//config := api.DefaultConfig()
+	//config.Address = "127.0.0.1:8500"
+	//client, err := api.NewClient(config)
+	//if err != nil {
+	//	fmt.Println("consul client error : ", err)
+	//	return
+	//}
+	//services, err := client.Agent().Services()
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Println(services["const.local"].Address, services["const.local"].Port)
+	//conn, err := grpc.Dial("192.168.3.146:9000", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//defer conn.Close()
+	//c := v1.NewInventoryClient(conn)
+	//detail, err := c.InvDetail(context.Background(), &v1.GoodsInvInfo{
+	//	Id: 1,
+	//})
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Println(detail)
 }
