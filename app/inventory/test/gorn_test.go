@@ -13,6 +13,7 @@ import (
 	v1 "shop/api/inventory/v1"
 	"shop/app/inventory/internal/biz"
 	"testing"
+	"time"
 )
 
 func TestGrom(t *testing.T) {
@@ -48,16 +49,16 @@ func TestConsul(t *testing.T) {
 	}
 	defer conn.Close()
 	c := v1.NewInventoryClient(conn)
-	detail, err := c.ReBack(context.Background(), &v1.SellInfo{
-		GoodsInfo: []*v1.GoodsInvInfo{
-			{Id: 1, Stocks: 10},
-		},
-	})
-	if err != nil {
-		log.Error(err.Error())
+	for {
+		detail, err := c.InvDetail(context.Background(), &v1.GoodsInvInfo{
+			Id: 1,
+		})
+		if err != nil {
+			log.Error(err.Error())
+		}
+		fmt.Println(detail)
+		time.Sleep(time.Second * 1)
 	}
-	fmt.Println(detail)
-
 	//config := api.DefaultConfig()
 	//config.Address = "127.0.0.1:8500"
 	//client, err := api.NewClient(config)
