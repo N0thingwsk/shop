@@ -89,20 +89,36 @@ func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
 	}, nil
 }
 
-func (u *UserUsecase) UpdateUserNickName(context.Context, User) (User, error) {
-	return User{}, nil
+func (u *UserUsecase) UpdateUserNickName(ctx context.Context, user User) (User, error) {
+	result, err := u.repo.UpdateUserNickName(ctx, user)
+	if err != nil {
+		return User{}, err
+	}
+	return result, nil
 }
 
-func (u *UserUsecase) UpdateUserPassword(context.Context, User) (User, error) {
-	return User{}, nil
+func (u *UserUsecase) UpdateUserPassword(ctx context.Context, user User) (User, error) {
+	result, err := u.repo.UpdateUserPassword(ctx, user)
+	if err != nil {
+		return User{}, err
+	}
+	return result, nil
 }
 
-func (u *UserUsecase) UpdateUserBirthday(context.Context, User) (User, error) {
-	return User{}, nil
+func (u *UserUsecase) UpdateUserBirthday(ctx context.Context, user User) (User, error) {
+	result, err := u.repo.UpdateUserBirthday(ctx, user)
+	if err != nil {
+		return User{}, err
+	}
+	return result, nil
 }
 
-func (u *UserUsecase) UpdateUserGender(context.Context, User) (User, error) {
-	return User{}, nil
+func (u *UserUsecase) UpdateUserGender(ctx context.Context, user User) (User, error) {
+	result, err := u.repo.UpdateUserGender(ctx, user)
+	if err != nil {
+		return User{}, err
+	}
+	return result, nil
 }
 
 func (u *UserUsecase) DeleteUser(ctx context.Context, id int) (User, error) {
