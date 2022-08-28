@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm/schema"
 	v1 "shop/api/inventory/v1"
 	"shop/app/inventory/internal/biz"
+	"sync"
 	"testing"
-	"time"
 )
 
 func TestGrom(t *testing.T) {
@@ -49,16 +49,28 @@ func TestConsul(t *testing.T) {
 	}
 	defer conn.Close()
 	c := v1.NewInventoryClient(conn)
-	for {
-		detail, err := c.InvDetail(context.Background(), &v1.GoodsInvInfo{
-			Id: 1,
-		})
-		if err != nil {
-			log.Error(err.Error())
-		}
-		fmt.Println(detail)
-		time.Sleep(time.Second * 1)
+	wg := sync.WaitGroup{}
+	wg.Add(10)
+	for i := 0; i < 10; i++ {
+		go func() {
+			fmt.Println("启动协程")
+			detail, err := c.Sell(context.Background(), &v1.SellInfo{
+				GoodsInfo: []*v1.GoodsInvInfo{
+					{Id: 1, Stocks: 10},
+					{Id: 2, Stocks: 10},
+				},
+			})
+			if err != nil {
+				log.Error(err.Error())
+				wg.Done()
+				return
+			}
+			fmt.Println(detail)
+			wg.Done()
+			fmt.Println("执行成功")
+		}()
 	}
+	wg.Wait()
 	//config := api.DefaultConfig()
 	//config.Address = "127.0.0.1:8500"
 	//client, err := api.NewClient(config)
@@ -84,4 +96,40 @@ func TestConsul(t *testing.T) {
 	//	return
 	//}
 	//fmt.Println(detail)
+}
+
+func TestGo(t *testing.T) {
+	db, err := gorm.Open(mysql.Open("root:123456@tcp(127.0.0.1:3306)/shop_inventory?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	go func() {
+		result := db.Exec("update inventory set stocks = stocks + 2, version = version = +1 where goods = 1 and version = version;")
+		if result.Error != nil {
+			panic(err.Error())
+		}
+	}()
+	go func() {
+		result := db.Exec("update inventory set stocks = stocks + 2, version = version = +1 where goods = 1 and version = version;")
+		if result.Error != nil {
+			panic(err.Error())
+		}
+	}()
+}
+
+func TestSsa(t *testing.T) {
+	arr := []int{1, 2, 3, 4, 5, 6, 7}
+	for _, x := range arr {
+		fmt.Println(x)
+		if x == 0 {
+			break
+		} else {
+			fmt.Println(1)
+			continue
+		}
+	}
 }

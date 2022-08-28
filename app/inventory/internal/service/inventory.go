@@ -41,10 +41,12 @@ func (i *InventoryService) InvDetail(ctx context.Context, in *v1.GoodsInvInfo) (
 }
 
 func (i *InventoryService) Sell(ctx context.Context, in *v1.SellInfo) (*emptypb.Empty, error) {
-	inv := make([]biz.Inventory, 5)
-	for i, x := range in.GoodsInfo {
-		inv[i].Goods = x.Id
-		inv[i].Stocks = x.Stocks
+	inv := make([]biz.Inventory, 0)
+	for _, x := range in.GoodsInfo {
+		inv = append(inv, biz.Inventory{
+			Goods:  x.Id,
+			Stocks: x.Stocks,
+		})
 	}
 	err := i.uc.SellInventory(ctx, inv)
 	if err != nil {
@@ -54,10 +56,12 @@ func (i *InventoryService) Sell(ctx context.Context, in *v1.SellInfo) (*emptypb.
 }
 
 func (i *InventoryService) ReBack(ctx context.Context, in *v1.SellInfo) (*emptypb.Empty, error) {
-	inv := make([]biz.Inventory, 5)
-	for i, x := range in.GoodsInfo {
-		inv[i].Goods = x.Id
-		inv[i].Stocks = x.Stocks
+	inv := make([]biz.Inventory, 0)
+	for _, x := range in.GoodsInfo {
+		inv = append(inv, biz.Inventory{
+			Goods:  x.Id,
+			Stocks: x.Stocks,
+		})
 	}
 	err := i.uc.ReBackInventory(ctx, inv)
 	if err != nil {

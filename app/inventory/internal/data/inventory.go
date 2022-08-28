@@ -58,17 +58,27 @@ func (i *inventoryRepo) DeleteInventory(ctx context.Context, inv biz.Inventory) 
 func (i *inventoryRepo) SellInventory(ctx context.Context, inv []biz.Inventory) error {
 	tx := i.data.db.Begin()
 	for _, x := range inv {
-		result, err := i.GetInventory(ctx, x)
-		if err != nil {
-			tx.Rollback()
-			return err
+		for {
+			result, err := i.GetInventory(ctx, x)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+			if result.Stocks < x.Stocks {
+				tx.Rollback()
+				return errors.New("库存不足")
+			}
+			result.Stocks -= x.Stocks
+			resul := i.data.db.Model(&biz.Inventory{}).Select("Stocks", "Version").Where("goods = ? and version = ?", x.Goods, result.Version).Updates(biz.Inventory{
+				Stocks:  result.Stocks,
+				Version: result.Version + 1,
+			})
+			if resul.RowsAffected == 0 {
+				continue
+			} else {
+				break
+			}
 		}
-		if result.Stocks < x.Stocks {
-			tx.Rollback()
-			return errors.New("库存不足")
-		}
-		result.Stocks -= x.Stocks
-		tx.Save(&result)
 	}
 	tx.Commit()
 	return nil
@@ -77,13 +87,21 @@ func (i *inventoryRepo) SellInventory(ctx context.Context, inv []biz.Inventory) 
 func (i *inventoryRepo) ReBackInventory(ctx context.Context, inv []biz.Inventory) error {
 	tx := i.data.db.Begin()
 	for _, x := range inv {
-		result, err := i.GetInventory(ctx, x)
-		if err != nil {
+		var in biz.Inventory
+		result := tx.Where(&biz.Inventory{Goods: x.Goods}).First(&in)
+		if result.Error != nil {
 			tx.Rollback()
-			return err
+			return result.Error
+		} else if result.RowsAffected == 0 {
+			tx.Rollback()
+			return errors.New("没有库存信息")
 		}
-		result.Stocks += x.Stocks
-		tx.Save(&result)
+		if in.Stocks < x.Stocks {
+			tx.Rollback()
+			return errors.New("库存不足")
+		}
+		in.Stocks += x.Stocks
+		tx.Save(&in)
 	}
 	tx.Commit()
 	return nil
