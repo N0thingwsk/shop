@@ -6,6 +6,25 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /helloworld/{name}:
+        get:
+            tags:
+                - Greeter
+            description: Sends a greeting
+            operationId: Greeter_SayHello
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
     /v1/inventory/getinventory:
         post:
             tags:
@@ -300,6 +319,14 @@ components:
                     type: string
                 gender:
                     type: string
+        helloworld.v1.HelloReply:
+            type: object
+            properties:
+                message:
+                    type: string
+            description: The response message containing the greetings
 tags:
+    - name: Greeter
+      description: The greeting service definition.
     - name: Inventory
     - name: User
