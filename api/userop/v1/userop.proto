@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.userop.v1;
+
+option go_package = "shop/api/userop/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.userop.v1";
+
+service Userop {
+	rpc CreateUserop (CreateUseropRequest) returns (CreateUseropReply);
+	rpc UpdateUserop (UpdateUseropRequest) returns (UpdateUseropReply);
+	rpc DeleteUserop (DeleteUseropRequest) returns (DeleteUseropReply);
+	rpc GetUserop (GetUseropRequest) returns (GetUseropReply);
+	rpc ListUserop (ListUseropRequest) returns (ListUseropReply);
+}
+
+message CreateUseropRequest {}
+message CreateUseropReply {}
+
+message UpdateUseropRequest {}
+message UpdateUseropReply {}
+
+message DeleteUseropRequest {}
+message DeleteUseropReply {}
+
+message GetUseropRequest {}
+message GetUseropReply {}
+
+message ListUseropRequest {}
+message ListUseropReply {}

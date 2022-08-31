@@ -6,6 +6,7 @@ require (
 	github.com/anaskhan96/go-password-encoder v0.0.0-20201010210601-c765b799fd72
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20220810143425-57dee517e574
 	github.com/go-kratos/kratos/v2 v2.4.1
+	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/google/wire v0.5.0
 	github.com/hashicorp/consul/api v1.14.0
 	google.golang.org/genproto v0.0.0-20220524023933-508584e28198

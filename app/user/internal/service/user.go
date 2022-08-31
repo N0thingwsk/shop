@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/biz"
@@ -18,7 +19,8 @@ func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 }
 
 func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.UserInfoReply, error) {
-	return nil, nil
+	fmt.Println("test")
+	return &v1.UserInfoReply{}, nil
 }
 
 func (u *UserService) LoginUser(ctx context.Context, in *v1.LoginRequest) (*v1.LoginReply, error) {

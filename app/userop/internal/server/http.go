@@ -4,18 +4,16 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	v1 "shop/api/user/v1"
-	"shop/app/user/internal/conf"
-	"shop/app/user/internal/pkg/middleware/auth"
-	"shop/app/user/internal/service"
+	v1 "shop/api/helloworld/v1"
+	"shop/app/userop/internal/conf"
+	"shop/app/userop/internal/service"
 )
 
-// NewHTTPServer new HTTP server.
-func NewHTTPServer(c *conf.Server, user *service.UserService, logger log.Logger) *http.Server {
+// NewHTTPServer new a HTTP server.
+func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
-			auth.JWTAuth("test"),
 		),
 	}
 	if c.Http.Network != "" {
@@ -28,6 +26,6 @@ func NewHTTPServer(c *conf.Server, user *service.UserService, logger log.Logger)
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterUserHTTPServer(srv, user)
+	v1.RegisterGreeterHTTPServer(srv, greeter)
 	return srv
 }
