@@ -24,24 +24,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.inventory.v1.GoodsInvInfo'
-    /v1/user/create:
-        post:
-            tags:
-                - User
-            operationId: User_RegisterUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.user.v1.RegisterRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
     /v1/user/delete:
         post:
             tags:
@@ -96,6 +78,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.LoginReply'
+    /v1/user/register:
+        post:
+            tags:
+                - User
+            operationId: User_RegisterUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.RegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
     /v1/user/sendcode:
         post:
             tags:
@@ -282,8 +282,6 @@ components:
         api.user.v1.UpdateBirthdayRequest_User:
             type: object
             properties:
-                token:
-                    type: string
                 birthday:
                     type: string
         api.user.v1.UpdateGenderRequest:
@@ -294,8 +292,6 @@ components:
         api.user.v1.UpdateGenderRequest_User:
             type: object
             properties:
-                token:
-                    type: string
                 gender:
                     type: string
         api.user.v1.UpdateNickNameRequest:
@@ -306,9 +302,7 @@ components:
         api.user.v1.UpdateNickNameRequest_User:
             type: object
             properties:
-                token:
-                    type: string
-                nikeName:
+                nikename:
                     type: string
         api.user.v1.UpdatePasswordRequest:
             type: object
@@ -318,8 +312,6 @@ components:
         api.user.v1.UpdatePasswordRequest_User:
             type: object
             properties:
-                token:
-                    type: string
                 password:
                     type: string
         api.user.v1.UserInfoReply:

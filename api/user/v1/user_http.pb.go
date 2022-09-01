@@ -45,7 +45,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r := s.Route("/")
 	r.POST("/v1/user/getuser", _User_GetUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/login", _User_LoginUser0_HTTP_Handler(srv))
-	r.POST("/v1/user/create", _User_RegisterUser0_HTTP_Handler(srv))
+	r.POST("/v1/user/register", _User_RegisterUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/update/nickname", _User_UpdateUserNickName0_HTTP_Handler(srv))
 	r.POST("/v1/user/update/password", _User_UpdateUserPassword0_HTTP_Handler(srv))
 	r.POST("/v1/user/update/birthday", _User_UpdateUserBirthday0_HTTP_Handler(srv))
@@ -286,7 +286,7 @@ func (c *UserHTTPClientImpl) LoginUser(ctx context.Context, in *LoginRequest, op
 
 func (c *UserHTTPClientImpl) RegisterUser(ctx context.Context, in *RegisterRequest, opts ...http.CallOption) (*UserInfoReply, error) {
 	var out UserInfoReply
-	pattern := "/v1/user/create"
+	pattern := "/v1/user/register"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserRegisterUser))
 	opts = append(opts, http.PathTemplate(pattern))

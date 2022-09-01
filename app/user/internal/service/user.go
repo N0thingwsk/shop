@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/biz"
+	"time"
 )
 
 type UserService struct {
@@ -41,33 +42,85 @@ func (u *UserService) LoginUser(ctx context.Context, in *v1.LoginRequest) (*v1.L
 }
 
 func (u *UserService) RegisterUser(ctx context.Context, in *v1.RegisterRequest) (*v1.UserInfoReply, error) {
-
-	return nil, nil
+	user, err := u.uc.CreateUser(ctx, biz.User{
+		Mobile:   in.User.Mobile,
+		Password: in.User.Password,
+	})
+	if err != nil {
+		return &v1.UserInfoReply{}, err
+	}
+	return &v1.UserInfoReply{
+		User: &v1.UserInfoReply_User{
+			Mobile: user.Mobile,
+		},
+	}, nil
 }
 
 func (u *UserService) UpdateUserNickName(ctx context.Context, in *v1.UpdateNickNameRequest) (*v1.UserInfoReply, error) {
-	return nil, nil
+	user, err := u.uc.UpdateUserNickName(ctx, biz.User{
+		Model: gorm.Model{
+			ID: uint(ctx.Value("userid").(float64)),
+		},
+		NickName: in.User.Nikename,
+	})
+	if err != nil {
+		return &v1.UserInfoReply{}, err
+	}
+	return &v1.UserInfoReply{User: &v1.UserInfoReply_User{
+		NikeName: user.NickName,
+	}}, nil
 }
 
 func (u *UserService) UpdateUserPassword(ctx context.Context, in *v1.UpdatePasswordRequest) (*v1.UserInfoReply, error) {
-	_, err := u.uc.UpdateUserPassword(ctx, biz.User{
+	user, err := u.uc.UpdateUserPassword(ctx, biz.User{
 		Model: gorm.Model{
-			ID: ctx.Value("userid").(uint),
+			ID: uint(ctx.Value("userid").(float64)),
 		},
 		Password: in.User.Password,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &v1.UserInfoReply{}, nil
+	return &v1.UserInfoReply{User: &v1.UserInfoReply_User{
+		Mobile: user.Mobile,
+	},
+	}, nil
 }
 
 func (u *UserService) UpdateUserBirthday(ctx context.Context, in *v1.UpdateBirthdayRequest) (*v1.UserInfoReply, error) {
-	return nil, nil
+	t, err := time.ParseInLocation("2006-01-02 15:04:05", in.User.Birthday, time.Local)
+	if err != nil {
+		return nil, err
+	}
+	user, err := u.uc.UpdateUserBirthday(ctx, biz.User{
+		Model: gorm.Model{
+			ID: uint(ctx.Value("userid").(float64)),
+		},
+		Birthday: &t,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &v1.UserInfoReply{User: &v1.UserInfoReply_User{
+		Mobile: user.Mobile,
+	},
+	}, nil
 }
 
 func (u *UserService) UpdateUserGender(ctx context.Context, in *v1.UpdateGenderRequest) (*v1.UserInfoReply, error) {
-	return nil, nil
+	user, err := u.uc.UpdateUserGender(ctx, biz.User{
+		Model: gorm.Model{
+			ID: uint(ctx.Value("userid").(float64)),
+		},
+		Gender: in.User.Gender,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &v1.UserInfoReply{User: &v1.UserInfoReply_User{
+		Mobile: user.Mobile,
+	},
+	}, nil
 }
 
 func (u *UserService) DeleteUser(ctx context.Context, in *v1.DeleteRequest) (*v1.UserInfoReply, error) {

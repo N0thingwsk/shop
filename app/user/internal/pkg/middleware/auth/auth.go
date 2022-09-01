@@ -35,7 +35,6 @@ func JWTAuth(secret string) middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
 			if tr, ok := transport.FromServerContext(ctx); ok {
-				fmt.Println(1)
 				tokenString := tr.RequestHeader().Get("Authorization")
 				auths := strings.SplitN(tokenString, " ", 2)
 				token, err := jwt.Parse(auths[0], func(token *jwt.Token) (interface{}, error) {

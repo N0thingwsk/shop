@@ -24,7 +24,7 @@ service User {
 
 	rpc RegisterUser (RegisterRequest) returns (UserInfoReply) {
 		option (google.api.http) = {
-			post: "/v1/user/create",
+			post: "/v1/user/register",
 			body: "*"
 		};
 	}
@@ -96,32 +96,28 @@ message RegisterRequest {
 
 message UpdateGenderRequest {
 	message User {
-		string token = 1;
-		string gender = 4;
+		string gender = 1;
 	}
 	User user = 1;
 }
 
 message UpdatePasswordRequest {
 	message User {
-		string token = 1;
-		string password = 2;
+		string password = 1;
 	}
 	User user = 1;
 }
 
 message UpdateNickNameRequest {
 	message User {
-		string token = 1;
-		string nike_name = 2;
+		string nikename = 1;
 	}
 	User user = 1;
 }
 
 message UpdateBirthdayRequest {
 	message User {
-		string token = 1;
-		string birthday = 3;
+		string birthday = 1;
 	}
 	User user = 1;
 }
