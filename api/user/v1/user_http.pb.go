@@ -47,9 +47,9 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/v1/user/login", _User_LoginUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/create", _User_RegisterUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/update/nickname", _User_UpdateUserNickName0_HTTP_Handler(srv))
-	r.POST("/v1/user/update/nickname", _User_UpdateUserPassword0_HTTP_Handler(srv))
-	r.POST("/v1/user/update/nickname", _User_UpdateUserBirthday0_HTTP_Handler(srv))
-	r.POST("/v1/user/update/nickname", _User_UpdateUserGender0_HTTP_Handler(srv))
+	r.POST("/v1/user/update/password", _User_UpdateUserPassword0_HTTP_Handler(srv))
+	r.POST("/v1/user/update/birthday", _User_UpdateUserBirthday0_HTTP_Handler(srv))
+	r.POST("/v1/user/update/gender", _User_UpdateUserGender0_HTTP_Handler(srv))
 	r.POST("/v1/user/delete", _User_DeleteUser0_HTTP_Handler(srv))
 	r.POST("/v1/user/sendcode", _User_SendVerificationCode0_HTTP_Handler(srv))
 }
@@ -312,7 +312,7 @@ func (c *UserHTTPClientImpl) SendVerificationCode(ctx context.Context, in *SendC
 
 func (c *UserHTTPClientImpl) UpdateUserBirthday(ctx context.Context, in *UpdateBirthdayRequest, opts ...http.CallOption) (*UserInfoReply, error) {
 	var out UserInfoReply
-	pattern := "/v1/user/update/nickname"
+	pattern := "/v1/user/update/birthday"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserUpdateUserBirthday))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -325,7 +325,7 @@ func (c *UserHTTPClientImpl) UpdateUserBirthday(ctx context.Context, in *UpdateB
 
 func (c *UserHTTPClientImpl) UpdateUserGender(ctx context.Context, in *UpdateGenderRequest, opts ...http.CallOption) (*UserInfoReply, error) {
 	var out UserInfoReply
-	pattern := "/v1/user/update/nickname"
+	pattern := "/v1/user/update/gender"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserUpdateUserGender))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -351,7 +351,7 @@ func (c *UserHTTPClientImpl) UpdateUserNickName(ctx context.Context, in *UpdateN
 
 func (c *UserHTTPClientImpl) UpdateUserPassword(ctx context.Context, in *UpdatePasswordRequest, opts ...http.CallOption) (*UserInfoReply, error) {
 	var out UserInfoReply
-	pattern := "/v1/user/update/nickname"
+	pattern := "/v1/user/update/password"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserUpdateUserPassword))
 	opts = append(opts, http.PathTemplate(pattern))

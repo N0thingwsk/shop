@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
+	"gorm.io/gorm"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/biz"
 )
@@ -24,10 +25,23 @@ func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.U
 }
 
 func (u *UserService) LoginUser(ctx context.Context, in *v1.LoginRequest) (*v1.LoginReply, error) {
-	return nil, nil
+	token, err := u.uc.LoginUser(ctx, biz.User{
+		Mobile:   in.User.Mobile,
+		Password: in.User.Password,
+	})
+	if err != nil {
+		return &v1.LoginReply{}, err
+	}
+	return &v1.LoginReply{
+		User: &v1.LoginReply_User{
+			Mobile: in.User.Mobile,
+		},
+		Token: token,
+	}, nil
 }
 
 func (u *UserService) RegisterUser(ctx context.Context, in *v1.RegisterRequest) (*v1.UserInfoReply, error) {
+
 	return nil, nil
 }
 
@@ -36,7 +50,16 @@ func (u *UserService) UpdateUserNickName(ctx context.Context, in *v1.UpdateNickN
 }
 
 func (u *UserService) UpdateUserPassword(ctx context.Context, in *v1.UpdatePasswordRequest) (*v1.UserInfoReply, error) {
-	return nil, nil
+	_, err := u.uc.UpdateUserPassword(ctx, biz.User{
+		Model: gorm.Model{
+			ID: ctx.Value("userid").(uint),
+		},
+		Password: in.User.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &v1.UserInfoReply{}, nil
 }
 
 func (u *UserService) UpdateUserBirthday(ctx context.Context, in *v1.UpdateBirthdayRequest) (*v1.UserInfoReply, error) {

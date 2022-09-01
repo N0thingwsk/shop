@@ -8,6 +8,8 @@ import (
 	"github.com/anaskhan96/go-password-encoder"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
+	"shop/app/user/internal/conf"
+	"shop/app/user/internal/pkg/middleware/auth"
 	"strings"
 	"time"
 )
@@ -40,11 +42,12 @@ type UserRepo interface {
 
 type UserUsecase struct {
 	repo UserRepo
+	c    *conf.Server
 	log  *log.Helper
 }
 
-func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
-	return &UserUsecase{repo: repo, log: log.NewHelper(logger)}
+func NewUserUsecase(repo UserRepo, c *conf.Server, logger log.Logger) *UserUsecase {
+	return &UserUsecase{repo: repo, c: c, log: log.NewHelper(logger)}
 }
 
 func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
@@ -65,10 +68,8 @@ func (u *UserUsecase) LoginUser(ctx context.Context, user User) (string, error) 
 	isPass := password.Verify(user.Password, passwordInfo[2], passwordInfo[3], options)
 	if isPass != true {
 		return "", errors.New("密码错误")
-	} else {
-		//TODO jwt
 	}
-	return "", nil
+	return auth.GenerateToken(u.c.Token.Secret, use.ID), nil
 }
 
 func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
@@ -98,6 +99,10 @@ func (u *UserUsecase) UpdateUserNickName(ctx context.Context, user User) (User, 
 }
 
 func (u *UserUsecase) UpdateUserPassword(ctx context.Context, user User) (User, error) {
+	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
+	salt, encodedPwd := password.Encode(user.Password, options)
+	newPassword := fmt.Sprintf("$pbkdf2-sha512$%s$%s", salt, encodedPwd)
+	user.Password = newPassword
 	result, err := u.repo.UpdateUserPassword(ctx, user)
 	if err != nil {
 		return User{}, err

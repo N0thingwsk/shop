@@ -5,6 +5,8 @@ server:
   grpc:
     addr: 0.0.0.0:9000
     timeout: 1s
+  token:
+    secret: "test"
 data:
   database:
     driver: mysql

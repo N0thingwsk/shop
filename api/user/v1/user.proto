@@ -37,19 +37,19 @@ service User {
 	}
 	rpc UpdateUserPassword(UpdatePasswordRequest) returns (UserInfoReply){
 		option (google.api.http) = {
-			post: "/v1/user/update/nickname",
+			post: "/v1/user/update/password",
 			body: "*"
 		};
 	}
 	rpc UpdateUserBirthday(UpdateBirthdayRequest) returns (UserInfoReply){
 		option (google.api.http) = {
-			post: "/v1/user/update/nickname",
+			post: "/v1/user/update/birthday",
 			body: "*"
 		};
 	}
 	rpc UpdateUserGender(UpdateGenderRequest) returns (UserInfoReply){
 		option (google.api.http) = {
-			post: "/v1/user/update/nickname",
+			post: "/v1/user/update/gender",
 			body: "*"
 		};
 	}
@@ -97,8 +97,6 @@ message RegisterRequest {
 message UpdateGenderRequest {
 	message User {
 		string token = 1;
-		string nike_name = 2;
-		string birthday = 3;
 		string gender = 4;
 	}
 	User user = 1;
@@ -107,9 +105,7 @@ message UpdateGenderRequest {
 message UpdatePasswordRequest {
 	message User {
 		string token = 1;
-		string nike_name = 2;
-		string birthday = 3;
-		string gender = 4;
+		string password = 2;
 	}
 	User user = 1;
 }
@@ -118,8 +114,6 @@ message UpdateNickNameRequest {
 	message User {
 		string token = 1;
 		string nike_name = 2;
-		string birthday = 3;
-		string gender = 4;
 	}
 	User user = 1;
 }
@@ -127,9 +121,7 @@ message UpdateNickNameRequest {
 message UpdateBirthdayRequest {
 	message User {
 		string token = 1;
-		string nike_name = 2;
 		string birthday = 3;
-		string gender = 4;
 	}
 	User user = 1;
 }

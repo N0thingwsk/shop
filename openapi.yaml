@@ -114,7 +114,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.SendCodeReply'
-    /v1/user/update/nickname:
+    /v1/user/update/birthday:
+        post:
+            tags:
+                - User
+            operationId: User_UpdateUserBirthday
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.UpdateBirthdayRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
+    /v1/user/update/gender:
         post:
             tags:
                 - User
@@ -124,6 +142,42 @@ paths:
                     application/json:
                         schema:
                             $ref: '#/components/schemas/api.user.v1.UpdateGenderRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
+    /v1/user/update/nickname:
+        post:
+            tags:
+                - User
+            operationId: User_UpdateUserNickName
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.UpdateNickNameRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UserInfoReply'
+    /v1/user/update/password:
+        post:
+            tags:
+                - User
+            operationId: User_UpdateUserPassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.UpdatePasswordRequest'
                 required: true
             responses:
                 "200":
@@ -230,11 +284,7 @@ components:
             properties:
                 token:
                     type: string
-                nikeName:
-                    type: string
                 birthday:
-                    type: string
-                gender:
                     type: string
         api.user.v1.UpdateGenderRequest:
             type: object
@@ -245,10 +295,6 @@ components:
             type: object
             properties:
                 token:
-                    type: string
-                nikeName:
-                    type: string
-                birthday:
                     type: string
                 gender:
                     type: string
@@ -264,10 +310,6 @@ components:
                     type: string
                 nikeName:
                     type: string
-                birthday:
-                    type: string
-                gender:
-                    type: string
         api.user.v1.UpdatePasswordRequest:
             type: object
             properties:
@@ -278,11 +320,7 @@ components:
             properties:
                 token:
                     type: string
-                nikeName:
-                    type: string
-                birthday:
-                    type: string
-                gender:
+                password:
                     type: string
         api.user.v1.UserInfoReply:
             type: object

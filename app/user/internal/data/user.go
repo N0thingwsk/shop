@@ -78,7 +78,7 @@ func (r *userRepo) UpdateUserNickName(ctx context.Context, use biz.User) (biz.Us
 }
 
 func (r *userRepo) UpdateUserPassword(ctx context.Context, use biz.User) (biz.User, error) {
-	result := r.data.db.Model(&biz.User{}).Where("id = ?", use.ID).Update("password", use.NickName)
+	result := r.data.db.Model(&biz.User{}).Where("id = ?", use.ID).Update("password", use.Password)
 	if result.Error != nil {
 		return biz.User{}, errors.New("PassWord更新失败")
 	}
@@ -86,7 +86,7 @@ func (r *userRepo) UpdateUserPassword(ctx context.Context, use biz.User) (biz.Us
 }
 
 func (r *userRepo) UpdateUserBirthday(ctx context.Context, use biz.User) (biz.User, error) {
-	result := r.data.db.Model(&biz.User{}).Where("id = ?", use.ID).Update("birthday", use.NickName)
+	result := r.data.db.Model(&biz.User{}).Where("id = ?", use.ID).Update("birthday", use.Birthday)
 	if result.Error != nil {
 		return biz.User{}, errors.New("BirthDay更新失败")
 	}
@@ -94,7 +94,7 @@ func (r *userRepo) UpdateUserBirthday(ctx context.Context, use biz.User) (biz.Us
 }
 
 func (r *userRepo) UpdateUserGender(ctx context.Context, use biz.User) (biz.User, error) {
-	result := r.data.db.Model(&biz.User{}).Where("id = ?", use.ID).Update("gender", use.NickName)
+	result := r.data.db.Model(&biz.User{}).Where("id = ?", use.ID).Update("gender", use.Gender)
 	if result.Error != nil {
 		return biz.User{}, errors.New("Gender更新失败")
 	}
