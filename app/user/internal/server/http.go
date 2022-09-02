@@ -18,7 +18,6 @@ func NewSkipRoutersMatcher() selector.MatchFunc {
 	skipRouters := map[string]struct{}{
 		"/api.user.v1.User/LoginUser":    {},
 		"/api.user.v1.User/RegisterUser": {},
-		"/api.user.v1.User/GetUser":      {},
 	}
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := skipRouters[operation]; ok {
