@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 	v1 "shop/api/user/v1"
@@ -21,8 +20,18 @@ func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 }
 
 func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.UserInfoReply, error) {
-	fmt.Println("test")
-	return &v1.UserInfoReply{}, nil
+	user, err := u.uc.GetUserinfo(ctx, int(ctx.Value("userid").(float64)))
+	if err != nil {
+		return &v1.UserInfoReply{}, err
+	}
+	return &v1.UserInfoReply{
+		User: &v1.UserInfoReply_User{
+			Mobile:   user.Mobile,
+			NikeName: user.NickName,
+			Birthday: user.Birthday.Format("2006-01-02 15:04:05"),
+			Gender:   user.Gender,
+		},
+	}, nil
 }
 
 func (u *UserService) LoginUser(ctx context.Context, in *v1.LoginRequest) (*v1.LoginReply, error) {
@@ -123,10 +132,12 @@ func (u *UserService) UpdateUserGender(ctx context.Context, in *v1.UpdateGenderR
 	}, nil
 }
 
+// DeleteUser TODO 注销账号待定
 func (u *UserService) DeleteUser(ctx context.Context, in *v1.DeleteRequest) (*v1.UserInfoReply, error) {
 	return nil, nil
 }
 
+// SendVerificationCode TODO 短信发送待定
 func (u *UserService) SendVerificationCode(ctx context.Context, in *v1.SendCodeRequest) (*v1.SendCodeReply, error) {
 	return nil, nil
 }
