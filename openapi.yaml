@@ -3,27 +3,9 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: User API
     version: 0.0.1
 paths:
-    /v1/inventory/getinventory:
-        post:
-            tags:
-                - Inventory
-            operationId: Inventory_InvDetail
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.inventory.v1.GoodsInvInfo'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.inventory.v1.GoodsInvInfo'
     /v1/user/delete:
         post:
             tags:
@@ -188,15 +170,6 @@ paths:
                                 $ref: '#/components/schemas/api.user.v1.UserInfoReply'
 components:
     schemas:
-        api.inventory.v1.GoodsInvInfo:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: int32
-                stocks:
-                    type: integer
-                    format: int32
         api.user.v1.DeleteRequest:
             type: object
             properties:
@@ -331,5 +304,4 @@ components:
                 gender:
                     type: string
 tags:
-    - name: Inventory
     - name: User
