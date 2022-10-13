@@ -3,9 +3,30 @@
 
 openapi: 3.0.3
 info:
-    title: User API
+    title: ""
     version: 0.0.1
 paths:
+    /v1/goods/getgoods:
+        get:
+            tags:
+                - Goods
+            description: 获取商品列表
+            operationId: Goods_GetGoodsList
+            parameters:
+                - name: goods
+                  in: query
+                  schema:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GetGoodsListReply'
     /v1/user/delete:
         post:
             tags:
@@ -170,6 +191,16 @@ paths:
                                 $ref: '#/components/schemas/api.user.v1.UserInfoReply'
 components:
     schemas:
+        api.goods.v1.GetGoodsListReply:
+            type: object
+            properties:
+                goods:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.goods.v1.GetGoodsListReply_Goods'
+        api.goods.v1.GetGoodsListReply_Goods:
+            type: object
+            properties: {}
         api.user.v1.DeleteRequest:
             type: object
             properties:
@@ -304,4 +335,5 @@ components:
                 gender:
                     type: string
 tags:
+    - name: Goods
     - name: User

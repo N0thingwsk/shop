@@ -133,3 +133,7 @@ func TestSsa(t *testing.T) {
 		}
 	}
 }
+
+func TestName(t *testing.T) {
+	fmt.Println("test")
+}

@@ -4,22 +4,189 @@ package api.goods.v1;
 
 //import "google.protobuf.Empty";
 
+import "google/api/annotations.proto";
+
 option go_package = "shop/api/goods/v1;v1";
 
 service Goods {
-//	rpc GoodsList() returns ();
-//	rpc BatchGetGoods() returns ()
-//	rpc CreateGoods() returns ()
-//	rpc DeleteGoods() returns ()
-//	rpc UpdateGoods() returns ()
-//	rpc GetGoodsDetail() returns ()
-//	rpc GetAllCategoryList() returns()
-//	rpc GetSubCategory() returns ()
-//	rpc CreateCategory() returns ()
-//	rpc DeleteCategory() returns ()
-//	rpc UpdateCategory() returns ()
-//	rpc BrandList() returns ()
-//	rpc CreateBrand() returns ()
-//	rpc UpdateBrand() returns ()
-//	rpc DeleteBrand() returns ()
+  //获取商品列表
+  rpc GetGoodsList(GetGoodsListRequest) returns (GetGoodsListReply) {
+    option (google.api.http) = {
+      get: "/v1/goods/getgoods"
+    };
+  }
+  //获取商品
+  rpc GetGoods(GoodsRequest) returns (GoodsReply);
+  //创建商品
+  rpc CreateGoods(CreateGoodsRequest) returns (CreateGoodsReply);
+  //更新商品
+  rpc UpdateGoods(UpdateGoodsRequest) returns (UpdateGoodsReply);
+  //删除商品
+  rpc DeleteGoods(DeleteGoodsRequest) returns (DeleteGoodsReply);
+  //获取商品详情
+  rpc GetGoodsDetail(GetGoodsDetailRequest) returns (GetGoodsDetailReply);
+  //创建商品详情
+  rpc CreateGoodsDetail(CreateGoodsRequest) returns (CreateGoodsReply);
+  //更新商品详情
+  rpc UpdateGoodsDetail(UpdateGoodsDetailRequest) returns (UpdateGoodsDetailReply);
+  //获取商品种类列表
+  rpc GetAllCategoryList(GetAllCategoryListRequest) returns(GetAllCategoryListReply);
+  //获取商品种类
+  rpc GetCategory(GetCategoryRequest) returns (GetCategoryReply);
+  //创建商品种类
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryReply);
+  //删除商品种类
+  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryReply);
+  //更新商品种类
+  rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryReply);
+  //获取品牌列表
+  rpc GetBrandList(GetBrandListRequest) returns (GetBrandListReply);
+  //获取品牌
+  rpc GetBrand(GetBrandRequest) returns (GetBrandReply);
+  //创建品牌
+  rpc CreateBrand(CreateBrandRequest) returns (CreateBrandReply);
+  //更新品牌
+  rpc UpdateBrand(UpdateBrandRequest) returns (UpdateBrandReply);
+  //删除品牌
+  rpc DeleteBrand(DeleteBrandRequest) returns (DeleteBrandReply);
 }
+
+message GetGoodsListRequest {
+  repeated int64 goods = 1;
+}
+
+message GetGoodsListReply {
+  message Goods {
+
+  }
+  repeated Goods goods = 1;
+}
+
+message GoodsRequest {
+  int64 goodsId = 1;
+}
+
+message GoodsReply {
+
+}
+
+message CreateGoodsRequest {
+
+}
+
+message CreateGoodsReply {
+
+}
+
+message UpdateGoodsRequest {
+
+}
+
+message UpdateGoodsReply {
+
+}
+
+message DeleteGoodsRequest {
+
+}
+
+message DeleteGoodsReply {
+
+}
+
+message GetGoodsDetailRequest {
+
+}
+
+message GetGoodsDetailReply {
+
+}
+
+message UpdateGoodsDetailRequest {
+
+}
+
+message UpdateGoodsDetailReply {
+
+}
+
+message GetAllCategoryListRequest {
+
+}
+
+message GetAllCategoryListReply{
+
+}
+
+message GetCategoryRequest {
+
+}
+
+message GetCategoryReply {
+
+}
+
+message CreateCategoryRequest {
+
+}
+
+message CreateCategoryReply {
+
+}
+
+message UpdateCategoryRequest {
+
+}
+
+message UpdateCategoryReply {
+
+}
+
+message DeleteCategoryRequest {
+
+}
+
+message DeleteCategoryReply {
+
+}
+
+message GetBrandListRequest {
+
+}
+
+message GetBrandListReply {
+
+}
+
+message GetBrandRequest {
+
+}
+
+message GetBrandReply {
+
+}
+
+message CreateBrandRequest {
+
+}
+
+message CreateBrandReply {
+
+}
+
+message UpdateBrandRequest {
+
+}
+
+message UpdateBrandReply {
+
+}
+
+message DeleteBrandRequest {
+
+}
+
+message DeleteBrandReply {
+
+}
+
