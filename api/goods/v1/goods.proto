@@ -12,43 +12,141 @@ service Goods {
   //获取商品列表
   rpc GetGoodsList(GetGoodsListRequest) returns (GetGoodsListReply) {
     option (google.api.http) = {
-      get: "/v1/goods/getgoods"
+      post: "/v1/goods/get/list"
+      body: "*"
     };
   }
+
   //获取商品
-  rpc GetGoods(GoodsRequest) returns (GoodsReply);
+  rpc GetGoods(GoodsRequest) returns (GoodsReply) {
+    option (google.api.http) = {
+      get: "/v1/goods/get/{id}"
+    };
+  }
+
   //创建商品
-  rpc CreateGoods(CreateGoodsRequest) returns (CreateGoodsReply);
+  rpc CreateGoods(CreateGoodsRequest) returns (CreateGoodsReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/add"
+      body: "*"
+    };
+  }
+
   //更新商品
-  rpc UpdateGoods(UpdateGoodsRequest) returns (UpdateGoodsReply);
+  rpc UpdateGoods(UpdateGoodsRequest) returns (UpdateGoodsReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/update"
+      body: "*"
+    };
+  }
+
   //删除商品
-  rpc DeleteGoods(DeleteGoodsRequest) returns (DeleteGoodsReply);
+  rpc DeleteGoods(DeleteGoodsRequest) returns (DeleteGoodsReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/delete"
+      body: "*"
+    };
+  }
+
   //获取商品详情
-  rpc GetGoodsDetail(GetGoodsDetailRequest) returns (GetGoodsDetailReply);
+  rpc GetGoodsDetail(GetGoodsDetailRequest) returns (GetGoodsDetailReply) {
+    option (google.api.http) = {
+      get: "/v1/goods/detail/get/{id}"
+    };
+  }
+
   //创建商品详情
-  rpc CreateGoodsDetail(CreateGoodsRequest) returns (CreateGoodsReply);
+  rpc CreateGoodsDetail(CreateGoodsRequest) returns (CreateGoodsReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/detail/add"
+      body: "*"
+    };
+  }
+
   //更新商品详情
-  rpc UpdateGoodsDetail(UpdateGoodsDetailRequest) returns (UpdateGoodsDetailReply);
+  rpc UpdateGoodsDetail(UpdateGoodsDetailRequest) returns (UpdateGoodsDetailReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/detail/update"
+      body: "*"
+    };
+  }
+
   //获取商品种类列表
-  rpc GetAllCategoryList(GetAllCategoryListRequest) returns(GetAllCategoryListReply);
+  rpc GetAllCategoryList(GetAllCategoryListRequest) returns(GetAllCategoryListReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/category/get/list"
+      body: "*"
+    };
+  }
+
   //获取商品种类
-  rpc GetCategory(GetCategoryRequest) returns (GetCategoryReply);
+  rpc GetCategory(GetCategoryRequest) returns (GetCategoryReply) {
+    option (google.api.http) = {
+      get: "/v1/goods/category/get/{id}"
+    };
+  }
+
   //创建商品种类
-  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryReply);
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/category/add"
+      body: "*"
+    };
+  }
+
   //删除商品种类
-  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryReply);
+  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/category/delete"
+      body: "*"
+    };
+  }
+
   //更新商品种类
-  rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryReply);
+  rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/category/update"
+      body: "*"
+    };
+  }
   //获取品牌列表
-  rpc GetBrandList(GetBrandListRequest) returns (GetBrandListReply);
+  rpc GetBrandList(GetBrandListRequest) returns (GetBrandListReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/brand/get/list"
+      body: "*"
+    };
+  }
+
   //获取品牌
-  rpc GetBrand(GetBrandRequest) returns (GetBrandReply);
+  rpc GetBrand(GetBrandRequest) returns (GetBrandReply) {
+    option (google.api.http) = {
+      get: "/v1/goods/brand/get"
+    };
+  }
+
   //创建品牌
-  rpc CreateBrand(CreateBrandRequest) returns (CreateBrandReply);
+  rpc CreateBrand(CreateBrandRequest) returns (CreateBrandReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/brand/add"
+      body: "*"
+    };
+  }
+
   //更新品牌
-  rpc UpdateBrand(UpdateBrandRequest) returns (UpdateBrandReply);
+  rpc UpdateBrand(UpdateBrandRequest) returns (UpdateBrandReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/brand/update"
+      body: "*"
+    };
+  }
+
   //删除品牌
-  rpc DeleteBrand(DeleteBrandRequest) returns (DeleteBrandReply);
+  rpc DeleteBrand(DeleteBrandRequest) returns (DeleteBrandReply) {
+    option (google.api.http) = {
+      post: "/v1/goods/brand/delete"
+      body: "*"
+    };
+  }
 }
 
 message GetGoodsListRequest {
@@ -63,7 +161,7 @@ message GetGoodsListReply {
 }
 
 message GoodsRequest {
-  int64 goodsId = 1;
+  int64 id = 1;
 }
 
 message GoodsReply {
@@ -95,7 +193,7 @@ message DeleteGoodsReply {
 }
 
 message GetGoodsDetailRequest {
-
+  int64 id = 1;
 }
 
 message GetGoodsDetailReply {
@@ -119,7 +217,7 @@ message GetAllCategoryListReply{
 }
 
 message GetCategoryRequest {
-
+  int64 id = 1;
 }
 
 message GetCategoryReply {

@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package api.userop.v1;
 
-import "google/api/annotations.proto";
-
 option go_package = "shop/api/userop/v1;v1";
 
 service Userop {

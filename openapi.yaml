@@ -6,20 +6,299 @@ info:
     title: ""
     version: 0.0.1
 paths:
-    /v1/goods/getgoods:
+    /v1/goods/add:
+        post:
+            tags:
+                - Goods
+            description: 创建商品
+            operationId: Goods_CreateGoods
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.CreateGoodsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.CreateGoodsReply'
+    /v1/goods/brand/add:
+        post:
+            tags:
+                - Goods
+            description: 创建品牌
+            operationId: Goods_CreateBrand
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.CreateBrandRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.CreateBrandReply'
+    /v1/goods/brand/delete:
+        post:
+            tags:
+                - Goods
+            description: 删除品牌
+            operationId: Goods_DeleteBrand
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.DeleteBrandRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.DeleteBrandReply'
+    /v1/goods/brand/get:
         get:
+            tags:
+                - Goods
+            description: 获取品牌
+            operationId: Goods_GetBrand
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GetBrandReply'
+    /v1/goods/brand/get/list:
+        post:
+            tags:
+                - Goods
+            description: 获取品牌列表
+            operationId: Goods_GetBrandList
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.GetBrandListRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GetBrandListReply'
+    /v1/goods/brand/update:
+        post:
+            tags:
+                - Goods
+            description: 更新品牌
+            operationId: Goods_UpdateBrand
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.UpdateBrandRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.UpdateBrandReply'
+    /v1/goods/category/add:
+        post:
+            tags:
+                - Goods
+            description: 创建商品种类
+            operationId: Goods_CreateCategory
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.CreateCategoryRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.CreateCategoryReply'
+    /v1/goods/category/delete:
+        post:
+            tags:
+                - Goods
+            description: 删除商品种类
+            operationId: Goods_DeleteCategory
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.DeleteCategoryRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.DeleteCategoryReply'
+    /v1/goods/category/get/list:
+        post:
+            tags:
+                - Goods
+            description: 获取商品种类列表
+            operationId: Goods_GetAllCategoryList
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.GetAllCategoryListRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GetAllCategoryListReply'
+    /v1/goods/category/get/{id}:
+        get:
+            tags:
+                - Goods
+            description: 获取商品种类
+            operationId: Goods_GetCategory
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GetCategoryReply'
+    /v1/goods/category/update:
+        post:
+            tags:
+                - Goods
+            description: 更新商品种类
+            operationId: Goods_UpdateCategory
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.UpdateCategoryRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.UpdateCategoryReply'
+    /v1/goods/delete:
+        post:
+            tags:
+                - Goods
+            description: 删除商品
+            operationId: Goods_DeleteGoods
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.DeleteGoodsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.DeleteGoodsReply'
+    /v1/goods/detail/add:
+        post:
+            tags:
+                - Goods
+            description: 创建商品详情
+            operationId: Goods_CreateGoodsDetail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.CreateGoodsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.CreateGoodsReply'
+    /v1/goods/detail/get/{id}:
+        get:
+            tags:
+                - Goods
+            description: 获取商品详情
+            operationId: Goods_GetGoodsDetail
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GetGoodsDetailReply'
+    /v1/goods/detail/update:
+        post:
+            tags:
+                - Goods
+            description: 更新商品详情
+            operationId: Goods_UpdateGoodsDetail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.UpdateGoodsDetailRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.UpdateGoodsDetailReply'
+    /v1/goods/get/list:
+        post:
             tags:
                 - Goods
             description: 获取商品列表
             operationId: Goods_GetGoodsList
-            parameters:
-                - name: goods
-                  in: query
-                  schema:
-                    type: array
-                    items:
-                        type: integer
-                        format: int64
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.GetGoodsListRequest'
+                required: true
             responses:
                 "200":
                     description: OK
@@ -27,6 +306,45 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.goods.v1.GetGoodsListReply'
+    /v1/goods/get/{id}:
+        get:
+            tags:
+                - Goods
+            description: 获取商品
+            operationId: Goods_GetGoods
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GoodsReply'
+    /v1/goods/update:
+        post:
+            tags:
+                - Goods
+            description: 更新商品
+            operationId: Goods_UpdateGoods
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.goods.v1.UpdateGoodsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.UpdateGoodsReply'
     /v1/user/delete:
         post:
             tags:
@@ -191,6 +509,63 @@ paths:
                                 $ref: '#/components/schemas/api.user.v1.UserInfoReply'
 components:
     schemas:
+        api.goods.v1.CreateBrandReply:
+            type: object
+            properties: {}
+        api.goods.v1.CreateBrandRequest:
+            type: object
+            properties: {}
+        api.goods.v1.CreateCategoryReply:
+            type: object
+            properties: {}
+        api.goods.v1.CreateCategoryRequest:
+            type: object
+            properties: {}
+        api.goods.v1.CreateGoodsReply:
+            type: object
+            properties: {}
+        api.goods.v1.CreateGoodsRequest:
+            type: object
+            properties: {}
+        api.goods.v1.DeleteBrandReply:
+            type: object
+            properties: {}
+        api.goods.v1.DeleteBrandRequest:
+            type: object
+            properties: {}
+        api.goods.v1.DeleteCategoryReply:
+            type: object
+            properties: {}
+        api.goods.v1.DeleteCategoryRequest:
+            type: object
+            properties: {}
+        api.goods.v1.DeleteGoodsReply:
+            type: object
+            properties: {}
+        api.goods.v1.DeleteGoodsRequest:
+            type: object
+            properties: {}
+        api.goods.v1.GetAllCategoryListReply:
+            type: object
+            properties: {}
+        api.goods.v1.GetAllCategoryListRequest:
+            type: object
+            properties: {}
+        api.goods.v1.GetBrandListReply:
+            type: object
+            properties: {}
+        api.goods.v1.GetBrandListRequest:
+            type: object
+            properties: {}
+        api.goods.v1.GetBrandReply:
+            type: object
+            properties: {}
+        api.goods.v1.GetCategoryReply:
+            type: object
+            properties: {}
+        api.goods.v1.GetGoodsDetailReply:
+            type: object
+            properties: {}
         api.goods.v1.GetGoodsListReply:
             type: object
             properties:
@@ -199,6 +574,41 @@ components:
                     items:
                         $ref: '#/components/schemas/api.goods.v1.GetGoodsListReply_Goods'
         api.goods.v1.GetGoodsListReply_Goods:
+            type: object
+            properties: {}
+        api.goods.v1.GetGoodsListRequest:
+            type: object
+            properties:
+                goods:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        api.goods.v1.GoodsReply:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateBrandReply:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateBrandRequest:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateCategoryReply:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateCategoryRequest:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateGoodsDetailReply:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateGoodsDetailRequest:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateGoodsReply:
+            type: object
+            properties: {}
+        api.goods.v1.UpdateGoodsRequest:
             type: object
             properties: {}
         api.user.v1.DeleteRequest:
