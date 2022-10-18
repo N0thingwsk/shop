@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api.goods.v1;
 
-//import "google.protobuf.Empty";
+//import "google.protobuf.c";
 
 import "google/api/annotations.proto";
 
@@ -20,7 +20,7 @@ service Goods {
   //获取商品
   rpc GetGoods(GoodsRequest) returns (GoodsReply) {
     option (google.api.http) = {
-      get: "/v1/goods/get/{id}"
+      get: "/v1/goods/get/{Id}"
     };
   }
 
@@ -48,41 +48,18 @@ service Goods {
     };
   }
 
-  //获取商品详情
-  rpc GetGoodsDetail(GetGoodsDetailRequest) returns (GetGoodsDetailReply) {
-    option (google.api.http) = {
-      get: "/v1/goods/detail/get/{id}"
-    };
-  }
-
-  //创建商品详情
-  rpc CreateGoodsDetail(CreateGoodsRequest) returns (CreateGoodsReply) {
-    option (google.api.http) = {
-      post: "/v1/goods/detail/add"
-      body: "*"
-    };
-  }
-
-  //更新商品详情
-  rpc UpdateGoodsDetail(UpdateGoodsDetailRequest) returns (UpdateGoodsDetailReply) {
-    option (google.api.http) = {
-      post: "/v1/goods/detail/update"
-      body: "*"
-    };
-  }
-
-  //获取商品种类列表
-  rpc GetAllCategoryList(GetAllCategoryListRequest) returns(GetAllCategoryListReply) {
+  //获取商品分类列表
+  rpc GetCategoryList(GetCategoryListRequest) returns(GetCategoryListReply) {
     option (google.api.http) = {
       post: "/v1/goods/category/get/list"
       body: "*"
     };
   }
 
-  //获取商品种类
+  //获取商品分类
   rpc GetCategory(GetCategoryRequest) returns (GetCategoryReply) {
     option (google.api.http) = {
-      get: "/v1/goods/category/get/{id}"
+      get: "/v1/goods/category/get/{Id}"
     };
   }
 
@@ -102,7 +79,7 @@ service Goods {
     };
   }
 
-  //更新商品种类
+  //更新商品分类类
   rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryReply) {
     option (google.api.http) = {
       post: "/v1/goods/category/update"
@@ -120,7 +97,7 @@ service Goods {
   //获取品牌
   rpc GetBrand(GetBrandRequest) returns (GetBrandReply) {
     option (google.api.http) = {
-      get: "/v1/goods/brand/get"
+      get: "/v1/goods/brand/get/{Id}"
     };
   }
 
@@ -149,103 +126,137 @@ service Goods {
   }
 }
 
+message GoodsValue {
+  bool OnSale = 1;
+  bool ShipFree = 2;
+  bool IsNew = 3;
+  bool IsHot = 4;
+  string Name = 5;
+  string GoodsSn = 6;
+  int64 ChickNum = 7;
+  int64 SoldNum = 8;
+  int64 FavNum = 9;
+  float MarketPrice = 10;
+  float ShopPrice = 11;
+  string GoodsBrief = 12;
+  string Images = 13;
+  string GoodsDetail = 14;
+  string GoodsFrontImage = 15;
+  int64 CategoryID = 16;
+  Category Category = 17;
+  int64 BrandsID = 18;
+  Brands Brands = 19;
+  int64 Id = 20;
+}
+
+message Category {
+  string Name = 1;
+  int64 ParentCategoryID = 2;
+  Category ParentCategory = 3;
+  int64 Level = 4;
+  bool IsTab = 5;
+  int64 Id = 6;
+}
+
+message Brands {
+  string Name = 1;
+  string Loge = 2;
+}
+
 message GetGoodsListRequest {
-  repeated int64 goods = 1;
+  repeated int64 Id = 1;
 }
 
 message GetGoodsListReply {
-  message Goods {
-
-  }
-  repeated Goods goods = 1;
+  int64 Code = 1;
+  string Message = 2;
+  repeated GoodsValue Goods = 3;
 }
 
 message GoodsRequest {
-  int64 id = 1;
+  int64 Id = 1;
 }
 
 message GoodsReply {
-
+  int64 Code = 1;
+  string Message = 2;
+  GoodsValue Goods = 3;
 }
 
 message CreateGoodsRequest {
-
+  GoodsValue Goods = 1;
 }
 
 message CreateGoodsReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message UpdateGoodsRequest {
-
+  GoodsValue Goods = 1;
 }
 
 message UpdateGoodsReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message DeleteGoodsRequest {
-
+  int64 Id = 1;
 }
 
 message DeleteGoodsReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message GetGoodsDetailRequest {
   int64 id = 1;
 }
 
-message GetGoodsDetailReply {
+message GetCategoryListRequest {
 
 }
 
-message UpdateGoodsDetailRequest {
-
-}
-
-message UpdateGoodsDetailReply {
-
-}
-
-message GetAllCategoryListRequest {
-
-}
-
-message GetAllCategoryListReply{
+message GetCategoryListReply{
 
 }
 
 message GetCategoryRequest {
-  int64 id = 1;
+  int64 Id = 1;
 }
 
 message GetCategoryReply {
-
+  int64 Code = 1;
+  string Message = 2;
+  Category Category = 3;
 }
 
 message CreateCategoryRequest {
-
+  Category Category = 1;
 }
 
 message CreateCategoryReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message UpdateCategoryRequest {
-
+  Category Category = 1;
 }
 
 message UpdateCategoryReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message DeleteCategoryRequest {
-
+  int64 Id = 1;
 }
 
 message DeleteCategoryReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message GetBrandListRequest {
@@ -257,34 +268,39 @@ message GetBrandListReply {
 }
 
 message GetBrandRequest {
-
+  int64 Id = 1;
 }
 
 message GetBrandReply {
-
+  int64 Code = 1;
+  string Message = 2;
+  Brands Brands = 3;
 }
 
 message CreateBrandRequest {
-
+  Brands Brands = 1;
 }
 
 message CreateBrandReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message UpdateBrandRequest {
-
+  Brands Brands = 1;
 }
 
 message UpdateBrandReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 
 message DeleteBrandRequest {
-
+  int64 Id = 1;
 }
 
 message DeleteBrandReply {
-
+  int64 Code = 1;
+  string Message = 2;
 }
 

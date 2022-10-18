@@ -22,60 +22,51 @@ const _ = http.SupportPackageIsVersion1
 const OperationGoodsCreateBrand = "/api.goods.v1.Goods/CreateBrand"
 const OperationGoodsCreateCategory = "/api.goods.v1.Goods/CreateCategory"
 const OperationGoodsCreateGoods = "/api.goods.v1.Goods/CreateGoods"
-const OperationGoodsCreateGoodsDetail = "/api.goods.v1.Goods/CreateGoodsDetail"
 const OperationGoodsDeleteBrand = "/api.goods.v1.Goods/DeleteBrand"
 const OperationGoodsDeleteCategory = "/api.goods.v1.Goods/DeleteCategory"
 const OperationGoodsDeleteGoods = "/api.goods.v1.Goods/DeleteGoods"
-const OperationGoodsGetAllCategoryList = "/api.goods.v1.Goods/GetAllCategoryList"
 const OperationGoodsGetBrand = "/api.goods.v1.Goods/GetBrand"
 const OperationGoodsGetBrandList = "/api.goods.v1.Goods/GetBrandList"
 const OperationGoodsGetCategory = "/api.goods.v1.Goods/GetCategory"
+const OperationGoodsGetCategoryList = "/api.goods.v1.Goods/GetCategoryList"
 const OperationGoodsGetGoods = "/api.goods.v1.Goods/GetGoods"
-const OperationGoodsGetGoodsDetail = "/api.goods.v1.Goods/GetGoodsDetail"
 const OperationGoodsGetGoodsList = "/api.goods.v1.Goods/GetGoodsList"
 const OperationGoodsUpdateBrand = "/api.goods.v1.Goods/UpdateBrand"
 const OperationGoodsUpdateCategory = "/api.goods.v1.Goods/UpdateCategory"
 const OperationGoodsUpdateGoods = "/api.goods.v1.Goods/UpdateGoods"
-const OperationGoodsUpdateGoodsDetail = "/api.goods.v1.Goods/UpdateGoodsDetail"
 
 type GoodsHTTPServer interface {
 	CreateBrand(context.Context, *CreateBrandRequest) (*CreateBrandReply, error)
 	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryReply, error)
 	CreateGoods(context.Context, *CreateGoodsRequest) (*CreateGoodsReply, error)
-	CreateGoodsDetail(context.Context, *CreateGoodsRequest) (*CreateGoodsReply, error)
 	DeleteBrand(context.Context, *DeleteBrandRequest) (*DeleteBrandReply, error)
 	DeleteCategory(context.Context, *DeleteCategoryRequest) (*DeleteCategoryReply, error)
 	DeleteGoods(context.Context, *DeleteGoodsRequest) (*DeleteGoodsReply, error)
-	GetAllCategoryList(context.Context, *GetAllCategoryListRequest) (*GetAllCategoryListReply, error)
 	GetBrand(context.Context, *GetBrandRequest) (*GetBrandReply, error)
 	GetBrandList(context.Context, *GetBrandListRequest) (*GetBrandListReply, error)
 	GetCategory(context.Context, *GetCategoryRequest) (*GetCategoryReply, error)
+	GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListReply, error)
 	GetGoods(context.Context, *GoodsRequest) (*GoodsReply, error)
-	GetGoodsDetail(context.Context, *GetGoodsDetailRequest) (*GetGoodsDetailReply, error)
 	GetGoodsList(context.Context, *GetGoodsListRequest) (*GetGoodsListReply, error)
 	UpdateBrand(context.Context, *UpdateBrandRequest) (*UpdateBrandReply, error)
 	UpdateCategory(context.Context, *UpdateCategoryRequest) (*UpdateCategoryReply, error)
 	UpdateGoods(context.Context, *UpdateGoodsRequest) (*UpdateGoodsReply, error)
-	UpdateGoodsDetail(context.Context, *UpdateGoodsDetailRequest) (*UpdateGoodsDetailReply, error)
 }
 
 func RegisterGoodsHTTPServer(s *http.Server, srv GoodsHTTPServer) {
 	r := s.Route("/")
 	r.POST("/v1/goods/get/list", _Goods_GetGoodsList0_HTTP_Handler(srv))
-	r.GET("/v1/goods/get/{id}", _Goods_GetGoods0_HTTP_Handler(srv))
+	r.GET("/v1/goods/get/{Id}", _Goods_GetGoods0_HTTP_Handler(srv))
 	r.POST("/v1/goods/add", _Goods_CreateGoods0_HTTP_Handler(srv))
 	r.POST("/v1/goods/update", _Goods_UpdateGoods0_HTTP_Handler(srv))
 	r.POST("/v1/goods/delete", _Goods_DeleteGoods0_HTTP_Handler(srv))
-	r.GET("/v1/goods/detail/get/{id}", _Goods_GetGoodsDetail0_HTTP_Handler(srv))
-	r.POST("/v1/goods/detail/add", _Goods_CreateGoodsDetail0_HTTP_Handler(srv))
-	r.POST("/v1/goods/detail/update", _Goods_UpdateGoodsDetail0_HTTP_Handler(srv))
-	r.POST("/v1/goods/category/get/list", _Goods_GetAllCategoryList0_HTTP_Handler(srv))
-	r.GET("/v1/goods/category/get/{id}", _Goods_GetCategory0_HTTP_Handler(srv))
+	r.POST("/v1/goods/category/get/list", _Goods_GetCategoryList0_HTTP_Handler(srv))
+	r.GET("/v1/goods/category/get/{Id}", _Goods_GetCategory0_HTTP_Handler(srv))
 	r.POST("/v1/goods/category/add", _Goods_CreateCategory0_HTTP_Handler(srv))
 	r.POST("/v1/goods/category/delete", _Goods_DeleteCategory0_HTTP_Handler(srv))
 	r.POST("/v1/goods/category/update", _Goods_UpdateCategory0_HTTP_Handler(srv))
 	r.POST("/v1/goods/brand/get/list", _Goods_GetBrandList0_HTTP_Handler(srv))
-	r.GET("/v1/goods/brand/get", _Goods_GetBrand0_HTTP_Handler(srv))
+	r.GET("/v1/goods/brand/get/{Id}", _Goods_GetBrand0_HTTP_Handler(srv))
 	r.POST("/v1/goods/brand/add", _Goods_CreateBrand0_HTTP_Handler(srv))
 	r.POST("/v1/goods/brand/update", _Goods_UpdateBrand0_HTTP_Handler(srv))
 	r.POST("/v1/goods/brand/delete", _Goods_DeleteBrand0_HTTP_Handler(srv))
@@ -179,81 +170,21 @@ func _Goods_DeleteGoods0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context
 	}
 }
 
-func _Goods_GetGoodsDetail0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
+func _Goods_GetCategoryList0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in GetGoodsDetailRequest
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationGoodsGetGoodsDetail)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetGoodsDetail(ctx, req.(*GetGoodsDetailRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*GetGoodsDetailReply)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _Goods_CreateGoodsDetail0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in CreateGoodsRequest
+		var in GetCategoryListRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationGoodsCreateGoodsDetail)
+		http.SetOperation(ctx, OperationGoodsGetCategoryList)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.CreateGoodsDetail(ctx, req.(*CreateGoodsRequest))
+			return srv.GetCategoryList(ctx, req.(*GetCategoryListRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*CreateGoodsReply)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _Goods_UpdateGoodsDetail0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in UpdateGoodsDetailRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationGoodsUpdateGoodsDetail)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.UpdateGoodsDetail(ctx, req.(*UpdateGoodsDetailRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*UpdateGoodsDetailReply)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _Goods_GetAllCategoryList0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in GetAllCategoryListRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationGoodsGetAllCategoryList)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetAllCategoryList(ctx, req.(*GetAllCategoryListRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*GetAllCategoryListReply)
+		reply := out.(*GetCategoryListReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -362,6 +293,9 @@ func _Goods_GetBrand0_HTTP_Handler(srv GoodsHTTPServer) func(ctx http.Context) e
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationGoodsGetBrand)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetBrand(ctx, req.(*GetBrandRequest))
@@ -436,21 +370,18 @@ type GoodsHTTPClient interface {
 	CreateBrand(ctx context.Context, req *CreateBrandRequest, opts ...http.CallOption) (rsp *CreateBrandReply, err error)
 	CreateCategory(ctx context.Context, req *CreateCategoryRequest, opts ...http.CallOption) (rsp *CreateCategoryReply, err error)
 	CreateGoods(ctx context.Context, req *CreateGoodsRequest, opts ...http.CallOption) (rsp *CreateGoodsReply, err error)
-	CreateGoodsDetail(ctx context.Context, req *CreateGoodsRequest, opts ...http.CallOption) (rsp *CreateGoodsReply, err error)
 	DeleteBrand(ctx context.Context, req *DeleteBrandRequest, opts ...http.CallOption) (rsp *DeleteBrandReply, err error)
 	DeleteCategory(ctx context.Context, req *DeleteCategoryRequest, opts ...http.CallOption) (rsp *DeleteCategoryReply, err error)
 	DeleteGoods(ctx context.Context, req *DeleteGoodsRequest, opts ...http.CallOption) (rsp *DeleteGoodsReply, err error)
-	GetAllCategoryList(ctx context.Context, req *GetAllCategoryListRequest, opts ...http.CallOption) (rsp *GetAllCategoryListReply, err error)
 	GetBrand(ctx context.Context, req *GetBrandRequest, opts ...http.CallOption) (rsp *GetBrandReply, err error)
 	GetBrandList(ctx context.Context, req *GetBrandListRequest, opts ...http.CallOption) (rsp *GetBrandListReply, err error)
 	GetCategory(ctx context.Context, req *GetCategoryRequest, opts ...http.CallOption) (rsp *GetCategoryReply, err error)
+	GetCategoryList(ctx context.Context, req *GetCategoryListRequest, opts ...http.CallOption) (rsp *GetCategoryListReply, err error)
 	GetGoods(ctx context.Context, req *GoodsRequest, opts ...http.CallOption) (rsp *GoodsReply, err error)
-	GetGoodsDetail(ctx context.Context, req *GetGoodsDetailRequest, opts ...http.CallOption) (rsp *GetGoodsDetailReply, err error)
 	GetGoodsList(ctx context.Context, req *GetGoodsListRequest, opts ...http.CallOption) (rsp *GetGoodsListReply, err error)
 	UpdateBrand(ctx context.Context, req *UpdateBrandRequest, opts ...http.CallOption) (rsp *UpdateBrandReply, err error)
 	UpdateCategory(ctx context.Context, req *UpdateCategoryRequest, opts ...http.CallOption) (rsp *UpdateCategoryReply, err error)
 	UpdateGoods(ctx context.Context, req *UpdateGoodsRequest, opts ...http.CallOption) (rsp *UpdateGoodsReply, err error)
-	UpdateGoodsDetail(ctx context.Context, req *UpdateGoodsDetailRequest, opts ...http.CallOption) (rsp *UpdateGoodsDetailReply, err error)
 }
 
 type GoodsHTTPClientImpl struct {
@@ -500,19 +431,6 @@ func (c *GoodsHTTPClientImpl) CreateGoods(ctx context.Context, in *CreateGoodsRe
 	return &out, err
 }
 
-func (c *GoodsHTTPClientImpl) CreateGoodsDetail(ctx context.Context, in *CreateGoodsRequest, opts ...http.CallOption) (*CreateGoodsReply, error) {
-	var out CreateGoodsReply
-	pattern := "/v1/goods/detail/add"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationGoodsCreateGoodsDetail))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
 func (c *GoodsHTTPClientImpl) DeleteBrand(ctx context.Context, in *DeleteBrandRequest, opts ...http.CallOption) (*DeleteBrandReply, error) {
 	var out DeleteBrandReply
 	pattern := "/v1/goods/brand/delete"
@@ -552,22 +470,9 @@ func (c *GoodsHTTPClientImpl) DeleteGoods(ctx context.Context, in *DeleteGoodsRe
 	return &out, err
 }
 
-func (c *GoodsHTTPClientImpl) GetAllCategoryList(ctx context.Context, in *GetAllCategoryListRequest, opts ...http.CallOption) (*GetAllCategoryListReply, error) {
-	var out GetAllCategoryListReply
-	pattern := "/v1/goods/category/get/list"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationGoodsGetAllCategoryList))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
 func (c *GoodsHTTPClientImpl) GetBrand(ctx context.Context, in *GetBrandRequest, opts ...http.CallOption) (*GetBrandReply, error) {
 	var out GetBrandReply
-	pattern := "/v1/goods/brand/get"
+	pattern := "/v1/goods/brand/get/{Id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationGoodsGetBrand))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -593,7 +498,7 @@ func (c *GoodsHTTPClientImpl) GetBrandList(ctx context.Context, in *GetBrandList
 
 func (c *GoodsHTTPClientImpl) GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...http.CallOption) (*GetCategoryReply, error) {
 	var out GetCategoryReply
-	pattern := "/v1/goods/category/get/{id}"
+	pattern := "/v1/goods/category/get/{Id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationGoodsGetCategory))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -604,24 +509,24 @@ func (c *GoodsHTTPClientImpl) GetCategory(ctx context.Context, in *GetCategoryRe
 	return &out, err
 }
 
-func (c *GoodsHTTPClientImpl) GetGoods(ctx context.Context, in *GoodsRequest, opts ...http.CallOption) (*GoodsReply, error) {
-	var out GoodsReply
-	pattern := "/v1/goods/get/{id}"
-	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationGoodsGetGoods))
+func (c *GoodsHTTPClientImpl) GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...http.CallOption) (*GetCategoryListReply, error) {
+	var out GetCategoryListReply
+	pattern := "/v1/goods/category/get/list"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationGoodsGetCategoryList))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return &out, err
 }
 
-func (c *GoodsHTTPClientImpl) GetGoodsDetail(ctx context.Context, in *GetGoodsDetailRequest, opts ...http.CallOption) (*GetGoodsDetailReply, error) {
-	var out GetGoodsDetailReply
-	pattern := "/v1/goods/detail/get/{id}"
+func (c *GoodsHTTPClientImpl) GetGoods(ctx context.Context, in *GoodsRequest, opts ...http.CallOption) (*GoodsReply, error) {
+	var out GoodsReply
+	pattern := "/v1/goods/get/{Id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationGoodsGetGoodsDetail))
+	opts = append(opts, http.Operation(OperationGoodsGetGoods))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -674,19 +579,6 @@ func (c *GoodsHTTPClientImpl) UpdateGoods(ctx context.Context, in *UpdateGoodsRe
 	pattern := "/v1/goods/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationGoodsUpdateGoods))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
-}
-
-func (c *GoodsHTTPClientImpl) UpdateGoodsDetail(ctx context.Context, in *UpdateGoodsDetailRequest, opts ...http.CallOption) (*UpdateGoodsDetailReply, error) {
-	var out UpdateGoodsDetailReply
-	pattern := "/v1/goods/detail/update"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationGoodsUpdateGoodsDetail))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

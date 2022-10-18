@@ -32,21 +32,15 @@ type GoodsClient interface {
 	UpdateGoods(ctx context.Context, in *UpdateGoodsRequest, opts ...grpc.CallOption) (*UpdateGoodsReply, error)
 	//删除商品
 	DeleteGoods(ctx context.Context, in *DeleteGoodsRequest, opts ...grpc.CallOption) (*DeleteGoodsReply, error)
-	//获取商品详情
-	GetGoodsDetail(ctx context.Context, in *GetGoodsDetailRequest, opts ...grpc.CallOption) (*GetGoodsDetailReply, error)
-	//创建商品详情
-	CreateGoodsDetail(ctx context.Context, in *CreateGoodsRequest, opts ...grpc.CallOption) (*CreateGoodsReply, error)
-	//更新商品详情
-	UpdateGoodsDetail(ctx context.Context, in *UpdateGoodsDetailRequest, opts ...grpc.CallOption) (*UpdateGoodsDetailReply, error)
 	//获取商品种类列表
-	GetAllCategoryList(ctx context.Context, in *GetAllCategoryListRequest, opts ...grpc.CallOption) (*GetAllCategoryListReply, error)
-	//获取商品种类
+	GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListReply, error)
+	//获取商品分类
 	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*GetCategoryReply, error)
 	//创建商品种类
 	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryReply, error)
 	//删除商品种类
 	DeleteCategory(ctx context.Context, in *DeleteCategoryRequest, opts ...grpc.CallOption) (*DeleteCategoryReply, error)
-	//更新商品种类
+	//更新商品分类类
 	UpdateCategory(ctx context.Context, in *UpdateCategoryRequest, opts ...grpc.CallOption) (*UpdateCategoryReply, error)
 	//获取品牌列表
 	GetBrandList(ctx context.Context, in *GetBrandListRequest, opts ...grpc.CallOption) (*GetBrandListReply, error)
@@ -113,36 +107,9 @@ func (c *goodsClient) DeleteGoods(ctx context.Context, in *DeleteGoodsRequest, o
 	return out, nil
 }
 
-func (c *goodsClient) GetGoodsDetail(ctx context.Context, in *GetGoodsDetailRequest, opts ...grpc.CallOption) (*GetGoodsDetailReply, error) {
-	out := new(GetGoodsDetailReply)
-	err := c.cc.Invoke(ctx, "/api.goods.v1.Goods/GetGoodsDetail", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *goodsClient) CreateGoodsDetail(ctx context.Context, in *CreateGoodsRequest, opts ...grpc.CallOption) (*CreateGoodsReply, error) {
-	out := new(CreateGoodsReply)
-	err := c.cc.Invoke(ctx, "/api.goods.v1.Goods/CreateGoodsDetail", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *goodsClient) UpdateGoodsDetail(ctx context.Context, in *UpdateGoodsDetailRequest, opts ...grpc.CallOption) (*UpdateGoodsDetailReply, error) {
-	out := new(UpdateGoodsDetailReply)
-	err := c.cc.Invoke(ctx, "/api.goods.v1.Goods/UpdateGoodsDetail", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *goodsClient) GetAllCategoryList(ctx context.Context, in *GetAllCategoryListRequest, opts ...grpc.CallOption) (*GetAllCategoryListReply, error) {
-	out := new(GetAllCategoryListReply)
-	err := c.cc.Invoke(ctx, "/api.goods.v1.Goods/GetAllCategoryList", in, out, opts...)
+func (c *goodsClient) GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListReply, error) {
+	out := new(GetCategoryListReply)
+	err := c.cc.Invoke(ctx, "/api.goods.v1.Goods/GetCategoryList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -244,21 +211,15 @@ type GoodsServer interface {
 	UpdateGoods(context.Context, *UpdateGoodsRequest) (*UpdateGoodsReply, error)
 	//删除商品
 	DeleteGoods(context.Context, *DeleteGoodsRequest) (*DeleteGoodsReply, error)
-	//获取商品详情
-	GetGoodsDetail(context.Context, *GetGoodsDetailRequest) (*GetGoodsDetailReply, error)
-	//创建商品详情
-	CreateGoodsDetail(context.Context, *CreateGoodsRequest) (*CreateGoodsReply, error)
-	//更新商品详情
-	UpdateGoodsDetail(context.Context, *UpdateGoodsDetailRequest) (*UpdateGoodsDetailReply, error)
 	//获取商品种类列表
-	GetAllCategoryList(context.Context, *GetAllCategoryListRequest) (*GetAllCategoryListReply, error)
-	//获取商品种类
+	GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListReply, error)
+	//获取商品分类
 	GetCategory(context.Context, *GetCategoryRequest) (*GetCategoryReply, error)
 	//创建商品种类
 	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryReply, error)
 	//删除商品种类
 	DeleteCategory(context.Context, *DeleteCategoryRequest) (*DeleteCategoryReply, error)
-	//更新商品种类
+	//更新商品分类类
 	UpdateCategory(context.Context, *UpdateCategoryRequest) (*UpdateCategoryReply, error)
 	//获取品牌列表
 	GetBrandList(context.Context, *GetBrandListRequest) (*GetBrandListReply, error)
@@ -292,17 +253,8 @@ func (UnimplementedGoodsServer) UpdateGoods(context.Context, *UpdateGoodsRequest
 func (UnimplementedGoodsServer) DeleteGoods(context.Context, *DeleteGoodsRequest) (*DeleteGoodsReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteGoods not implemented")
 }
-func (UnimplementedGoodsServer) GetGoodsDetail(context.Context, *GetGoodsDetailRequest) (*GetGoodsDetailReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGoodsDetail not implemented")
-}
-func (UnimplementedGoodsServer) CreateGoodsDetail(context.Context, *CreateGoodsRequest) (*CreateGoodsReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateGoodsDetail not implemented")
-}
-func (UnimplementedGoodsServer) UpdateGoodsDetail(context.Context, *UpdateGoodsDetailRequest) (*UpdateGoodsDetailReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateGoodsDetail not implemented")
-}
-func (UnimplementedGoodsServer) GetAllCategoryList(context.Context, *GetAllCategoryListRequest) (*GetAllCategoryListReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllCategoryList not implemented")
+func (UnimplementedGoodsServer) GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCategoryList not implemented")
 }
 func (UnimplementedGoodsServer) GetCategory(context.Context, *GetCategoryRequest) (*GetCategoryReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCategory not implemented")
@@ -434,74 +386,20 @@ func _Goods_DeleteGoods_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Goods_GetGoodsDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGoodsDetailRequest)
+func _Goods_GetCategoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCategoryListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GoodsServer).GetGoodsDetail(ctx, in)
+		return srv.(GoodsServer).GetCategoryList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.goods.v1.Goods/GetGoodsDetail",
+		FullMethod: "/api.goods.v1.Goods/GetCategoryList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GoodsServer).GetGoodsDetail(ctx, req.(*GetGoodsDetailRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Goods_CreateGoodsDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGoodsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GoodsServer).CreateGoodsDetail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.goods.v1.Goods/CreateGoodsDetail",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GoodsServer).CreateGoodsDetail(ctx, req.(*CreateGoodsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Goods_UpdateGoodsDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateGoodsDetailRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GoodsServer).UpdateGoodsDetail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.goods.v1.Goods/UpdateGoodsDetail",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GoodsServer).UpdateGoodsDetail(ctx, req.(*UpdateGoodsDetailRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Goods_GetAllCategoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllCategoryListRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GoodsServer).GetAllCategoryList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.goods.v1.Goods/GetAllCategoryList",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GoodsServer).GetAllCategoryList(ctx, req.(*GetAllCategoryListRequest))
+		return srv.(GoodsServer).GetCategoryList(ctx, req.(*GetCategoryListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -696,20 +594,8 @@ var Goods_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Goods_DeleteGoods_Handler,
 		},
 		{
-			MethodName: "GetGoodsDetail",
-			Handler:    _Goods_GetGoodsDetail_Handler,
-		},
-		{
-			MethodName: "CreateGoodsDetail",
-			Handler:    _Goods_CreateGoodsDetail_Handler,
-		},
-		{
-			MethodName: "UpdateGoodsDetail",
-			Handler:    _Goods_UpdateGoodsDetail_Handler,
-		},
-		{
-			MethodName: "GetAllCategoryList",
-			Handler:    _Goods_GetAllCategoryList_Handler,
+			MethodName: "GetCategoryList",
+			Handler:    _Goods_GetCategoryList_Handler,
 		},
 		{
 			MethodName: "GetCategory",

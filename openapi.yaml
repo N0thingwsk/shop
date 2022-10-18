@@ -63,19 +63,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.goods.v1.DeleteBrandReply'
-    /v1/goods/brand/get:
-        get:
-            tags:
-                - Goods
-            description: 获取品牌
-            operationId: Goods_GetBrand
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.goods.v1.GetBrandReply'
     /v1/goods/brand/get/list:
         post:
             tags:
@@ -95,6 +82,26 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.goods.v1.GetBrandListReply'
+    /v1/goods/brand/get/{Id}:
+        get:
+            tags:
+                - Goods
+            description: 获取品牌
+            operationId: Goods_GetBrand
+            parameters:
+                - name: Id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.goods.v1.GetBrandReply'
     /v1/goods/brand/update:
         post:
             tags:
@@ -157,12 +164,12 @@ paths:
             tags:
                 - Goods
             description: 获取商品种类列表
-            operationId: Goods_GetAllCategoryList
+            operationId: Goods_GetCategoryList
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.goods.v1.GetAllCategoryListRequest'
+                            $ref: '#/components/schemas/api.goods.v1.GetCategoryListRequest'
                 required: true
             responses:
                 "200":
@@ -170,15 +177,15 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.goods.v1.GetAllCategoryListReply'
-    /v1/goods/category/get/{id}:
+                                $ref: '#/components/schemas/api.goods.v1.GetCategoryListReply'
+    /v1/goods/category/get/{Id}:
         get:
             tags:
                 - Goods
-            description: 获取商品种类
+            description: 获取商品分类
             operationId: Goods_GetCategory
             parameters:
-                - name: id
+                - name: Id
                   in: path
                   required: true
                   schema:
@@ -195,7 +202,7 @@ paths:
         post:
             tags:
                 - Goods
-            description: 更新商品种类
+            description: 更新商品分类类
             operationId: Goods_UpdateCategory
             requestBody:
                 content:
@@ -229,64 +236,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.goods.v1.DeleteGoodsReply'
-    /v1/goods/detail/add:
-        post:
-            tags:
-                - Goods
-            description: 创建商品详情
-            operationId: Goods_CreateGoodsDetail
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.goods.v1.CreateGoodsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.goods.v1.CreateGoodsReply'
-    /v1/goods/detail/get/{id}:
-        get:
-            tags:
-                - Goods
-            description: 获取商品详情
-            operationId: Goods_GetGoodsDetail
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: int64
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.goods.v1.GetGoodsDetailReply'
-    /v1/goods/detail/update:
-        post:
-            tags:
-                - Goods
-            description: 更新商品详情
-            operationId: Goods_UpdateGoodsDetail
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.goods.v1.UpdateGoodsDetailRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.goods.v1.UpdateGoodsDetailReply'
     /v1/goods/get/list:
         post:
             tags:
@@ -306,14 +255,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.goods.v1.GetGoodsListReply'
-    /v1/goods/get/{id}:
+    /v1/goods/get/{Id}:
         get:
             tags:
                 - Goods
             description: 获取商品
             operationId: Goods_GetGoods
             parameters:
-                - name: id
+                - name: Id
                   in: path
                   required: true
                   schema:
@@ -509,48 +458,112 @@ paths:
                                 $ref: '#/components/schemas/api.user.v1.UserInfoReply'
 components:
     schemas:
+        api.goods.v1.Brands:
+            type: object
+            properties:
+                Name:
+                    type: string
+                Loge:
+                    type: string
+        api.goods.v1.Category:
+            type: object
+            properties:
+                Name:
+                    type: string
+                ParentCategoryID:
+                    type: integer
+                    format: int64
+                ParentCategory:
+                    $ref: '#/components/schemas/api.goods.v1.Category'
+                Level:
+                    type: integer
+                    format: int64
+                IsTab:
+                    type: boolean
+                Id:
+                    type: integer
+                    format: int64
         api.goods.v1.CreateBrandReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.CreateBrandRequest:
             type: object
-            properties: {}
+            properties:
+                Brands:
+                    $ref: '#/components/schemas/api.goods.v1.Brands'
         api.goods.v1.CreateCategoryReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.CreateCategoryRequest:
             type: object
-            properties: {}
+            properties:
+                Category:
+                    $ref: '#/components/schemas/api.goods.v1.Category'
         api.goods.v1.CreateGoodsReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.CreateGoodsRequest:
             type: object
-            properties: {}
+            properties:
+                Goods:
+                    $ref: '#/components/schemas/api.goods.v1.GoodsValue'
         api.goods.v1.DeleteBrandReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.DeleteBrandRequest:
             type: object
-            properties: {}
+            properties:
+                Id:
+                    type: integer
+                    format: int64
         api.goods.v1.DeleteCategoryReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.DeleteCategoryRequest:
             type: object
-            properties: {}
+            properties:
+                Id:
+                    type: integer
+                    format: int64
         api.goods.v1.DeleteGoodsReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.DeleteGoodsRequest:
             type: object
-            properties: {}
-        api.goods.v1.GetAllCategoryListReply:
-            type: object
-            properties: {}
-        api.goods.v1.GetAllCategoryListRequest:
-            type: object
-            properties: {}
+            properties:
+                Id:
+                    type: integer
+                    format: int64
         api.goods.v1.GetBrandListReply:
             type: object
             properties: {}
@@ -559,58 +572,150 @@ components:
             properties: {}
         api.goods.v1.GetBrandReply:
             type: object
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
+                Brands:
+                    $ref: '#/components/schemas/api.goods.v1.Brands'
+        api.goods.v1.GetCategoryListReply:
+            type: object
+            properties: {}
+        api.goods.v1.GetCategoryListRequest:
+            type: object
             properties: {}
         api.goods.v1.GetCategoryReply:
             type: object
-            properties: {}
-        api.goods.v1.GetGoodsDetailReply:
-            type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
+                Category:
+                    $ref: '#/components/schemas/api.goods.v1.Category'
         api.goods.v1.GetGoodsListReply:
             type: object
             properties:
-                goods:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
+                Goods:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.goods.v1.GetGoodsListReply_Goods'
-        api.goods.v1.GetGoodsListReply_Goods:
-            type: object
-            properties: {}
+                        $ref: '#/components/schemas/api.goods.v1.GoodsValue'
         api.goods.v1.GetGoodsListRequest:
             type: object
             properties:
-                goods:
+                Id:
                     type: array
                     items:
                         type: integer
                         format: int64
         api.goods.v1.GoodsReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
+                Goods:
+                    $ref: '#/components/schemas/api.goods.v1.GoodsValue'
+        api.goods.v1.GoodsValue:
+            type: object
+            properties:
+                OnSale:
+                    type: boolean
+                ShipFree:
+                    type: boolean
+                IsNew:
+                    type: boolean
+                IsHot:
+                    type: boolean
+                Name:
+                    type: string
+                GoodsSn:
+                    type: string
+                ChickNum:
+                    type: integer
+                    format: int64
+                SoldNum:
+                    type: integer
+                    format: int64
+                FavNum:
+                    type: integer
+                    format: int64
+                MarketPrice:
+                    type: number
+                    format: float
+                ShopPrice:
+                    type: number
+                    format: float
+                GoodsBrief:
+                    type: string
+                Images:
+                    type: string
+                GoodsDetail:
+                    type: string
+                GoodsFrontImage:
+                    type: string
+                CategoryID:
+                    type: integer
+                    format: int64
+                Category:
+                    $ref: '#/components/schemas/api.goods.v1.Category'
+                BrandsID:
+                    type: integer
+                    format: int64
+                Brands:
+                    $ref: '#/components/schemas/api.goods.v1.Brands'
+                Id:
+                    type: integer
+                    format: int64
         api.goods.v1.UpdateBrandReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.UpdateBrandRequest:
             type: object
-            properties: {}
+            properties:
+                Brands:
+                    $ref: '#/components/schemas/api.goods.v1.Brands'
         api.goods.v1.UpdateCategoryReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.UpdateCategoryRequest:
             type: object
-            properties: {}
-        api.goods.v1.UpdateGoodsDetailReply:
-            type: object
-            properties: {}
-        api.goods.v1.UpdateGoodsDetailRequest:
-            type: object
-            properties: {}
+            properties:
+                Category:
+                    $ref: '#/components/schemas/api.goods.v1.Category'
         api.goods.v1.UpdateGoodsReply:
             type: object
-            properties: {}
+            properties:
+                Code:
+                    type: integer
+                    format: int64
+                Message:
+                    type: string
         api.goods.v1.UpdateGoodsRequest:
             type: object
-            properties: {}
+            properties:
+                Goods:
+                    $ref: '#/components/schemas/api.goods.v1.GoodsValue'
         api.user.v1.DeleteRequest:
             type: object
             properties:
