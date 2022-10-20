@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v9"
 	"github.com/google/wire"
@@ -8,6 +9,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"shop/app/goods/internal/conf"
+	"time"
 )
 
 // ProviderSet is data providers.
@@ -40,10 +42,16 @@ func NewDb(c *conf.Data) *gorm.DB {
 }
 
 func NewCache(c *conf.Data) *redis.Client {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancel()
 	rc := redis.NewClient(&redis.Options{
 		Addr:     c.Redis.Addr,
 		Password: "",
 		DB:       0,
 	})
+	_, err := rc.Ping(ctx).Result()
+	if err != nil {
+		panic(err.Error())
+	}
 	return rc
 }

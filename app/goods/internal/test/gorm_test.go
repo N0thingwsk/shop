@@ -1,17 +1,24 @@
 package test
 
 import (
+	"context"
 	"fmt"
+	"github.com/go-redis/redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"shop/app/goods/internal/biz"
 	"testing"
+	"time"
 )
 
+type User struct {
+	gorm.Model
+	Name string
+}
+
 func TestGorm(t *testing.T) {
-	db, err := gorm.Open(mysql.Open("root:123456@tcp(127.0.0.1:3306)/shop_goods?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
+	db, err := gorm.Open(mysql.Open("root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
@@ -24,33 +31,33 @@ func TestGorm(t *testing.T) {
 	//if err != nil {
 	//	panic(err.Error())
 	//}
-	tx := db.Begin()
-	var cat biz.Category
-	tx.First(&cat, 9)
-	var ban biz.Brands
-	tx.First(&ban, 1)
-	t.Log(cat, ban)
-	for i := 1; i <= 10; i++ {
-		tx.Create(&biz.Goods{
-			Category:        cat,
-			Brands:          ban,
-			OnSale:          false,
-			ShipFree:        false,
-			IsNew:           false,
-			IsHot:           false,
-			Name:            fmt.Sprintf("test%d", i),
-			GoodsSn:         fmt.Sprintf("102030123%d", i),
-			ChickNum:        int64(i),
-			SoldNum:         10,
-			FavNum:          10,
-			MarketPrice:     10,
-			ShopPrice:       10,
-			GoodsBrief:      "test",
-			Images:          "/test",
-			GoodsDetail:     "test",
-			GoodsFrontImage: "/test",
-		})
+	user := User{
+		Model: gorm.Model{
+			ID: 1,
+		},
+		Name: "LLLLL",
 	}
-	tx.Commit()
 
+	db.Model(&User{}).Updates(&user)
+	fmt.Println(user)
+
+}
+
+func TestUser(t *testing.T) {
+	r := redis.NewClient(&redis.Options{
+		Addr:     "127.0.0.1:6379",
+		Password: "",
+		DB:       0,
+	})
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	r.HSet(ctx, "user",
+		"name", "",
+		"age", "12",
+	)
+	result, err := r.HGetAll(ctx, "user").Result()
+	if err != nil {
+		return
+	}
+	fmt.Println(result)
 }

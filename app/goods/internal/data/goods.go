@@ -41,30 +41,36 @@ func (g *goodsRepo) GetGoods(id int) (biz.Goods, error) {
 }
 
 func (g *goodsRepo) CreateGoods(goods biz.Goods) error {
-	g.data.db.Create(&goods)
+	result := g.data.db.Create(&goods)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
 func (g *goodsRepo) UpdateGoods(goods biz.Goods) error {
+	result := g.data.db.Updates(&goods)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
 func (g *goodsRepo) DeleteGoods(id int) error {
-	g.data.db.Where("id = ?", id).Delete(&biz.Goods{})
+	result := g.data.db.Where("id = ?", id).Delete(&biz.Goods{})
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
-func (g *goodsRepo) GetCategoryList(id []int) ([]biz.Category, error) {
-	var goods []biz.Category
-	for _, x := range id {
-		var gds biz.Category
-		result := g.data.db.First(&gds, x)
-		goods = append(goods, gds)
-		if result.Error != nil {
-			return []biz.Category{}, result.Error
-		}
+func (g *goodsRepo) GetCategoryList() ([]biz.Category, error) {
+	var category []biz.Category
+	result := g.data.db.Find(&category)
+	if result.Error != nil {
+		return []biz.Category{}, result.Error
 	}
-	return goods, nil
+	return category, nil
 }
 
 func (g *goodsRepo) GetCategory(id int) (biz.Category, error) {
@@ -77,5 +83,59 @@ func (g *goodsRepo) GetCategory(id int) (biz.Category, error) {
 }
 
 func (g *goodsRepo) DeleteCategory(id int) error {
+	result := g.data.db.Where("id = ?", id).Delete(&biz.Category{})
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (g *goodsRepo) UpdateCategory(category biz.Category) error {
+	result := g.data.db.Updates(&category)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (g *goodsRepo) GetBrandList() ([]biz.Brands, error) {
+	var brands []biz.Brands
+	result := g.data.db.Find(&brands)
+	if result.Error != nil {
+		return []biz.Brands{}, result.Error
+	}
+	return brands, nil
+}
+
+func (g *goodsRepo) GetBrand(id int64) (biz.Brands, error) {
+	var brands biz.Brands
+	result := g.data.db.First(&brands, id)
+	if result.Error != nil {
+		return biz.Brands{}, result.Error
+	}
+	return brands, nil
+}
+
+func (g *goodsRepo) CreateBrand(brands biz.Brands) error {
+	result := g.data.db.Create(&brands)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (g *goodsRepo) UpdateBrand(brands biz.Brands) error {
+	result := g.data.db.Updates(&brands)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (g goodsRepo) DeleteBrand(id int64) error {
+	result := g.data.db.Where("id = ?", id).Delete(&biz.Brands{})
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
