@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/handlers"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/conf"
-	"shop/app/user/internal/pkg/middleware/auth"
 	"shop/app/user/internal/service"
 )
 
@@ -32,7 +31,7 @@ func NewHTTPServer(c *conf.Server, user *service.UserService, logger log.Logger)
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
-			selector.Server(auth.JWTAuth(c.Token.Secret)).Match(NewSkipRoutersMatcher()).Build(),
+			//selector.Server(auth.JWTAuth(c.Token.Secret)).Match(NewSkipRoutersMatcher()).Build(),
 		),
 		http.Filter(
 			handlers.CORS(

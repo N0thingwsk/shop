@@ -163,7 +163,7 @@ paths:
         post:
             tags:
                 - Goods
-            description: 获取商品种类列表
+            description: 获取商品分类列表
             operationId: Goods_GetCategoryList
             requestBody:
                 content:

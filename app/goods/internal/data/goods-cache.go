@@ -1,50 +1,62 @@
 package data
 
-//func (g *goodsRepo) GetGoodsCache(key string) (map[string]string, error) {
-//	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
-//	defer cancel()
-//	result, err := g.data.rc.HGetAll(ctx, key).Result()
-//	if err != nil {
-//		return result, err
-//	}
-//	return result, nil
-//}
-//
-//func (g *goodsRepo) SetGoodsCache(goods biz.Goods) error {
-//	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
-//	defer cancel()
-//	err := g.data.rc.HSet(ctx,
-//		strconv.Itoa(int(goods.ID)),
-//		"Category", goods.Category.Name,
-//		"Brands ", goods.Brands.Name,
-//		"OnSale", goods.OnSale,
-//		"ShipFree", goods.ShipFree,
-//		"IsNew", goods.IsNew,
-//		"IsHot", goods.IsHot,
-//		"Name", goods.Name,
-//		"GoodsSn", goods.GoodsSn,
-//		"ChickNum", goods.ChickNum,
-//		"SoldNum", goods.SoldNum,
-//		"FavNum", goods.FavNum,
-//		"MarketPrice", goods.MarketPrice,
-//		"ShopPrice", goods.ShopPrice,
-//		"GoodsBrief", goods.GoodsBrief,
-//		"Images", goods.Images,
-//		"GoodsDetail", goods.GoodsDetail,
-//		"GoodsFrontImage", goods.GoodsFrontImage,
-//	).Err()
-//	if err != nil {
-//		return err
-//	}
-//	return nil
-//}
-//
-//func (g *goodsRepo) DeleteGoodsCache(key string) error {
-//	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
-//	defer cancel()
-//	err := g.data.rc.Del(ctx, key).Err()
-//	if err != nil {
-//		return err
-//	}
-//	return nil
-//}
+import (
+	"context"
+	"encoding/json"
+	"math/rand"
+	"shop/app/goods/internal/biz"
+	"strconv"
+	"time"
+)
+
+func (g *goodsRepo) GetGoodsCache(key string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancel()
+	result, err := g.data.rc.Get(ctx, key).Result()
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+func (g *goodsRepo) GetGoodsListCache(key []int64) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	goods := make(map[string]string)
+	for _, x := range key {
+		result, err := g.data.rc.Get(ctx, string(x)).Result()
+		if err != nil {
+			return "", err
+		}
+		goods[string(x)] = result
+	}
+	marshal, err := json.Marshal(&goods)
+	if err != nil {
+		return "", err
+	}
+	return string(marshal), err
+}
+
+func (g *goodsRepo) CreateGoodsCache(goods biz.Goods) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancel()
+	marshal, err := json.Marshal(&goods)
+	if err != nil {
+		return err
+	}
+	err = g.data.rc.Set(ctx, strconv.Itoa(int(goods.ID)), marshal, time.Second*time.Duration(1000+rand.Intn(1000))).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g *goodsRepo) DeleteGoodsCache(key string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancel()
+	err := g.data.rc.Del(ctx, key).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}

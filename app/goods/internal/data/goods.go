@@ -31,7 +31,7 @@ func (g *goodsRepo) GetGoodsList(id []int64) ([]biz.Goods, error) {
 	return goods, nil
 }
 
-func (g *goodsRepo) GetGoods(id int) (biz.Goods, error) {
+func (g *goodsRepo) GetGoods(id int64) (biz.Goods, error) {
 	var goods biz.Goods
 	result := g.data.db.First(&goods, id)
 	if result.Error != nil {
@@ -56,7 +56,7 @@ func (g *goodsRepo) UpdateGoods(goods biz.Goods) error {
 	return nil
 }
 
-func (g *goodsRepo) DeleteGoods(id int) error {
+func (g *goodsRepo) DeleteGoods(id int64) error {
 	result := g.data.db.Where("id = ?", id).Delete(&biz.Goods{})
 	if result.Error != nil {
 		return result.Error
@@ -73,7 +73,7 @@ func (g *goodsRepo) GetCategoryList() ([]biz.Category, error) {
 	return category, nil
 }
 
-func (g *goodsRepo) GetCategory(id int) (biz.Category, error) {
+func (g *goodsRepo) GetCategory(id int64) (biz.Category, error) {
 	var category biz.Category
 	result := g.data.db.First(&category, id)
 	if result.Error != nil {
@@ -82,16 +82,16 @@ func (g *goodsRepo) GetCategory(id int) (biz.Category, error) {
 	return category, nil
 }
 
-func (g *goodsRepo) DeleteCategory(id int) error {
-	result := g.data.db.Where("id = ?", id).Delete(&biz.Category{})
+func (g *goodsRepo) UpdateCategory(category biz.Category) error {
+	result := g.data.db.Updates(&category)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (g *goodsRepo) UpdateCategory(category biz.Category) error {
-	result := g.data.db.Updates(&category)
+func (g *goodsRepo) DeleteCategory(id int64) error {
+	result := g.data.db.Where("id = ?", id).Delete(&biz.Category{})
 	if result.Error != nil {
 		return result.Error
 	}

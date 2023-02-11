@@ -26,21 +26,21 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 }
 
 // GetUserinfo 获取用户信息
-func (r *userRepo) GetUserinfo(ctx context.Context, user *biz.User) (*biz.User, error) {
-	cache, err := r.data.rc.Get(ctx, strconv.Itoa(int(user.ID))).Result()
+func (r *userRepo) GetUserinfo(ctx context.Context, user biz.User) (biz.User, error) {
+	cache, err := r.data.rc.Get(ctx, strconv.Itoa(int(user.ID))).Bytes()
 	if err == redis.Nil {
 		result := r.data.db.Where("id = ?", user.ID).First(&user)
 		if result.RowsAffected == 0 {
-			return &biz.User{}, errors.New("GetUserinfo err: user is nil")
+			return biz.User{}, errors.New("GetUserinfo err: user is nil")
 		}
 		if result.Error != nil {
-			return &biz.User{}, errors.New("GetUserinfo err: user get fail")
+			return biz.User{}, errors.New("GetUserinfo err: user get fail")
 		}
 		info := v1.UserInfoReply{
 			User: &v1.UserInfoReply_User{
 				Mobile:   user.Mobile,
 				NikeName: user.NickName,
-				Birthday: user.Birthday.String(),
+				Birthday: user.Birthday,
 				Gender:   user.Gender,
 			},
 		}
@@ -48,52 +48,73 @@ func (r *userRepo) GetUserinfo(ctx context.Context, user *biz.User) (*biz.User, 
 		if err != nil {
 			log.Error("GetUserinfo err: protobuf marshal err")
 		}
-		set := r.data.rc.Set(ctx, string(marshal))
+		fmt.Println(marshal)
+		err = r.data.rc.Set(ctx, strconv.Itoa(int(user.ID)), marshal, time.Second*60).Err()
+		if err != nil {
+			log.Error("GetUserinfo err: redis write err", err.Error())
+		}
 		return user, nil
 	} else if err != nil {
-		return &biz.User{}, err
-	} else {
-
+		return biz.User{}, err
 	}
+	if err := r.data.rc.Expire(ctx, "1", time.Second*60).Err(); err != nil {
+		log.Error("GetUserinfo err: redis time reset fail")
+	}
+	var info v1.UserInfoReply
+	err = proto.Unmarshal(cache, &info)
+	if err != nil {
+		return biz.User{}, errors.New("GetUserinfo err: protobuf unmarshal err")
+	}
+	user.Mobile = info.User.GetMobile()
+	user.NickName = info.User.GetNikeName()
+	user.Birthday = info.User.GetBirthday()
+	user.Gender = info.User.GetGender()
+	return user, nil
 }
 
-func (r *userRepo) CreateUser(ctx context.Context, user *biz.User) (*biz.User, error) {
-	result := r.data.db.Where("mobile = ?", user.Mobile)
+func (r *userRepo) CreateUser(ctx context.Context, user biz.User) (biz.User, error) {
+	tx := r.data.db.Begin()
+	result := tx.Where("mobile = ?", user.Mobile)
 	if result.RowsAffected == 1 {
 		log.Error("CreateUser err: user already exists")
-		return &biz.User{}, errors.New("user already exists")
+		tx.Rollback()
+		return biz.User{}, errors.New("user already exists")
 	}
-	t := time.Now()
-	result = r.data.db.Create(&biz.User{
+	result = tx.Create(&biz.User{
 		Mobile:   user.Mobile,
 		Password: user.Password,
 		NickName: fmt.Sprintf("用户%s", user.Mobile),
-		Birthday: &t,
+		Birthday: time.Now().String(),
 		Gender:   "男",
 	})
 	if result.Error != nil {
-		return &biz.User{}, result.Error
+		tx.Rollback()
+		return biz.User{}, result.Error
 	}
-	return &biz.User{
+	tx.Commit()
+	return biz.User{
 		Mobile:   user.Mobile,
 		NickName: fmt.Sprintf("用户%s", user.Mobile),
-		Birthday: &t,
+		Birthday: user.Birthday,
 		Gender:   "男",
 	}, nil
 }
 
-func (r *userRepo) UpdateUser(ctx context.Context, user *biz.User) (*biz.User, error) {
-	result := r.data.db.Model(&biz.User{}).Where("id = ?", user.ID).Update("nick_name", user.NickName)
+func (r *userRepo) UpdateUser(ctx context.Context, user biz.User) (biz.User, error) {
+	tx := r.data.db.Begin()
+	result := tx.Model(&biz.User{}).Where("id = ?", user.ID).Updates(&user)
 	if result.Error != nil {
-		return &biz.User{}, errors.New("NickName更新失败")
+		tx.Rollback()
+		return biz.User{}, errors.New("NickName更新失败")
 	}
+	tx.Commit()
 	return user, nil
 }
 
-func (r *userRepo) DeleteUser(ctx context.Context, user *biz.User) (*biz.User, error) {
-	result := r.data.db.Delete(&biz.User{}, id)
+func (r *userRepo) DeleteUser(ctx context.Context, user biz.User) (biz.User, error) {
+	result := r.data.db.Delete(&biz.User{}, user.ID)
 	if result.Error != nil {
 
 	}
-	return &biz.User{}, nil
+	return biz.User{}, nil
 }

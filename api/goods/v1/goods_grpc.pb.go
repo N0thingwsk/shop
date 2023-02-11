@@ -32,7 +32,7 @@ type GoodsClient interface {
 	UpdateGoods(ctx context.Context, in *UpdateGoodsRequest, opts ...grpc.CallOption) (*UpdateGoodsReply, error)
 	//删除商品
 	DeleteGoods(ctx context.Context, in *DeleteGoodsRequest, opts ...grpc.CallOption) (*DeleteGoodsReply, error)
-	//获取商品种类列表
+	//获取商品分类列表
 	GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListReply, error)
 	//获取商品分类
 	GetCategory(ctx context.Context, in *GetCategoryRequest, opts ...grpc.CallOption) (*GetCategoryReply, error)
@@ -211,7 +211,7 @@ type GoodsServer interface {
 	UpdateGoods(context.Context, *UpdateGoodsRequest) (*UpdateGoodsReply, error)
 	//删除商品
 	DeleteGoods(context.Context, *DeleteGoodsRequest) (*DeleteGoodsReply, error)
-	//获取商品种类列表
+	//获取商品分类列表
 	GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListReply, error)
 	//获取商品分类
 	GetCategory(context.Context, *GetCategoryRequest) (*GetCategoryReply, error)

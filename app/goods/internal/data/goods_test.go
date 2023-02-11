@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"shop/app/goods/internal/biz"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -272,4 +273,32 @@ func TestDeleteBrand(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+}
+
+func TestCreateGoodsCache(t *testing.T) {
+	g, err := TNewGoodsRepo()
+	if err != nil {
+		t.Error(err)
+	}
+	goods, err := g.GetGoods(50)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(goods)
+	err = g.CreateGoodsCache(goods)
+	if err != nil {
+		t.Error("set", err)
+	}
+}
+
+func TestGetGoodsCache(t *testing.T) {
+	g, err := TNewGoodsRepo()
+	if err != nil {
+		t.Error(err)
+	}
+	cache, err := g.GetGoodsCache(strconv.Itoa(50))
+	if err != nil {
+		t.Error("get", err)
+	}
+	t.Log(cache)
 }

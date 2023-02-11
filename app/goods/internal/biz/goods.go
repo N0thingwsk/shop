@@ -1,7 +1,6 @@
 package biz
 
 import (
-	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
@@ -39,9 +38,9 @@ type GoodsCategoryBrand struct {
 type Goods struct {
 	gorm.Model
 	CategoryID int64 `gorm:"type:int;not null"`
-	Category   Category
+	Category   *Category
 	BrandsID   int64 `gorm:"type:int;not null"`
-	Brands     Brands
+	Brands     *Brands
 	//是否上架
 	OnSale bool `gorm:"default:false;not null"`
 	//是否免运费
@@ -76,6 +75,23 @@ type Goods struct {
 
 type GoodsRepo interface {
 	GetGoodsList([]int64) ([]Goods, error)
+	GetGoods(int64) (Goods, error)
+	CreateGoods(Goods) error
+	UpdateGoods(Goods) error
+	DeleteGoods(int64) error
+	GetCategoryList() ([]Category, error)
+	GetCategory(int64) (Category, error)
+	UpdateCategory(Category) error
+	DeleteCategory(int64) error
+	GetBrandList() ([]Brands, error)
+	GetBrand(int64) (Brands, error)
+	CreateBrand(Brands) error
+	UpdateBrand(Brands) error
+	DeleteBrand(int64) error
+	GetGoodsCache(key string) (string, error)
+	GetGoodsListCache(key []int64) (string, error)
+	CreateGoodsCache(goods Goods) error
+	DeleteGoodsCache(key string) error
 }
 
 type GoodsUsecase struct {
@@ -87,7 +103,29 @@ func NewGoodsUsecase(repo GoodsRepo, logger log.Logger) *GoodsUsecase {
 	return &GoodsUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (uc *GoodsUsecase) CreateGreeter(ctx context.Context, g *Goods) (*Goods, error) {
-	uc.log.WithContext(ctx).Infof("CreateGreeter: %v")
-	return g, nil
+func (g *GoodsUsecase) GetGoodsList(id []int64) ([]Goods, error) {
+	return []Goods{
+		{
+			Model:           gorm.Model{},
+			CategoryID:      0,
+			Category:        Category{},
+			BrandsID:        0,
+			Brands:          Brands{},
+			OnSale:          false,
+			ShipFree:        false,
+			IsNew:           false,
+			IsHot:           false,
+			Name:            "",
+			GoodsSn:         "",
+			ChickNum:        0,
+			SoldNum:         0,
+			FavNum:          0,
+			MarketPrice:     0,
+			ShopPrice:       0,
+			GoodsBrief:      "test",
+			Images:          "test",
+			GoodsDetail:     "test",
+			GoodsFrontImage: "test",
+		},
+	}, nil
 }
