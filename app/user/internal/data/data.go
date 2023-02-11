@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v9"
 	"github.com/google/wire"
@@ -45,5 +46,8 @@ func NewRedis(c *conf.Data) *redis.Client {
 		Password: "",
 		DB:       0,
 	})
+	if result, err := rc.Ping(context.Background()).Result(); err != nil {
+		log.Debug(result)
+	}
 	return rc
 }
