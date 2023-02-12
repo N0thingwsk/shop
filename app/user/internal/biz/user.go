@@ -23,10 +23,10 @@ type User struct {
 }
 
 type UserRepo interface {
-	GetUserinfo(context.Context, User) (User, error)
-	CreateUser(context.Context, User) (User, error)
-	UpdateUser(context.Context, User) (User, error)
-	DeleteUser(context.Context, User) (User, error)
+	GetUserinfo(context.Context, int) (User, error)
+	CreateUser(context.Context, *User) (*User, error)
+	UpdateUser(context.Context, *User) (*User, error)
+	DeleteUser(context.Context, int) (User, error)
 }
 
 type UserUsecase struct {

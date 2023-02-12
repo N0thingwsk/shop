@@ -6,9 +6,21 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v9"
 	"google.golang.org/protobuf/proto"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	v1 "shop/api/user/v1"
+	"shop/app/user/internal/biz"
 	"testing"
+	"time"
 )
+
+func wirteredis(marshal []byte, rc *redis.Client) {
+	err := rc.Set(context.Background(), "1", string(marshal), time.Second*60).Err()
+	if err != nil {
+		log.Error(err.Error())
+	}
+}
 
 func TestCache(t *testing.T) {
 	info := v1.UserInfoReply{
@@ -31,11 +43,43 @@ func TestCache(t *testing.T) {
 	if result, err := rc.Ping(context.Background()).Result(); err != nil {
 		log.Debug(result)
 	}
-	set := rc.Set(context.Background(), "1", string(marshal), 0).Err()
-	fmt.Println(set)
-	result, err := rc.Get(context.Background(), "1").Result()
+	wirteredis(marshal, rc)
+	result, err := rc.Get(context.Background(), "1").Bytes()
 	if err != nil {
-		return
+		panic(err.Error())
+	} else if err == redis.Nil {
+		log.Error(err.Error())
 	}
-	fmt.Println(result)
+	var v v1.UserInfoReply
+	err = proto.Unmarshal(result, &v)
+	if err != nil {
+		log.Error(err.Error())
+	}
+	fmt.Println(v.User.Mobile)
+}
+
+func TestMysql(t *testing.T) {
+	addr := "root:123456@tcp(127.0.0.1:3306)/shop_user?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(addr), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	err = db.AutoMigrate(&biz.User{})
+	if err != nil {
+		panic(err.Error())
+	}
+	info := biz.User{
+		Model: gorm.Model{
+			ID: 1,
+		},
+		Gender: "10",
+	}
+	result := db.Save(&info)
+	if result.Error != nil {
+		log.Error(result.Error)
+	}
 }

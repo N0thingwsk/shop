@@ -26,10 +26,11 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 }
 
 // GetUserinfo 获取用户信息
-func (r *userRepo) GetUserinfo(ctx context.Context, user biz.User) (biz.User, error) {
-	cache, err := r.data.rc.Get(ctx, strconv.Itoa(int(user.ID))).Bytes()
+func (r *userRepo) GetUserinfo(ctx context.Context, uid int) (biz.User, error) {
+	cache, err := r.data.rc.Get(ctx, strconv.Itoa(uid)).Bytes()
 	if err == redis.Nil {
-		result := r.data.db.Where("id = ?", user.ID).First(&user)
+		user := biz.User{}
+		result := r.data.db.Where("id = ?", uid).First(&user)
 		if result.RowsAffected == 0 {
 			return biz.User{}, errors.New("GetUserinfo err: user is nil")
 		}
@@ -48,7 +49,6 @@ func (r *userRepo) GetUserinfo(ctx context.Context, user biz.User) (biz.User, er
 		if err != nil {
 			log.Error("GetUserinfo err: protobuf marshal err")
 		}
-		fmt.Println(marshal)
 		err = r.data.rc.Set(ctx, strconv.Itoa(int(user.ID)), marshal, time.Second*60).Err()
 		if err != nil {
 			log.Error("GetUserinfo err: redis write err", err.Error())
@@ -65,20 +65,21 @@ func (r *userRepo) GetUserinfo(ctx context.Context, user biz.User) (biz.User, er
 	if err != nil {
 		return biz.User{}, errors.New("GetUserinfo err: protobuf unmarshal err")
 	}
-	user.Mobile = info.User.GetMobile()
-	user.NickName = info.User.GetNikeName()
-	user.Birthday = info.User.GetBirthday()
-	user.Gender = info.User.GetGender()
-	return user, nil
+	return biz.User{
+		Mobile:   info.User.GetMobile(),
+		NickName: info.User.GetNikeName(),
+		Birthday: info.User.GetBirthday(),
+		Gender:   info.User.GetGender(),
+	}, nil
 }
 
-func (r *userRepo) CreateUser(ctx context.Context, user biz.User) (biz.User, error) {
+func (r *userRepo) CreateUser(ctx context.Context, user *biz.User) (*biz.User, error) {
 	tx := r.data.db.Begin()
 	result := tx.Where("mobile = ?", user.Mobile)
 	if result.RowsAffected == 1 {
 		log.Error("CreateUser err: user already exists")
 		tx.Rollback()
-		return biz.User{}, errors.New("user already exists")
+		return &biz.User{}, errors.New("user already exists")
 	}
 	result = tx.Create(&biz.User{
 		Mobile:   user.Mobile,
@@ -89,7 +90,7 @@ func (r *userRepo) CreateUser(ctx context.Context, user biz.User) (biz.User, err
 	})
 	if result.Error != nil {
 		tx.Rollback()
-		return biz.User{}, result.Error
+		return &biz.User{}, result.Error
 	}
 	tx.Commit()
 	return biz.User{
@@ -100,7 +101,7 @@ func (r *userRepo) CreateUser(ctx context.Context, user biz.User) (biz.User, err
 	}, nil
 }
 
-func (r *userRepo) UpdateUser(ctx context.Context, user biz.User) (biz.User, error) {
+func (r *userRepo) UpdateUser(ctx context.Context, user *biz.User) (*biz.User, error) {
 	tx := r.data.db.Begin()
 	result := tx.Model(&biz.User{}).Where("id = ?", user.ID).Updates(&user)
 	if result.Error != nil {
@@ -111,8 +112,8 @@ func (r *userRepo) UpdateUser(ctx context.Context, user biz.User) (biz.User, err
 	return user, nil
 }
 
-func (r *userRepo) DeleteUser(ctx context.Context, user biz.User) (biz.User, error) {
-	result := r.data.db.Delete(&biz.User{}, user.ID)
+func (r *userRepo) DeleteUser(ctx context.Context, uid int) (biz.User, error) {
+	result := r.data.db.Delete(&biz.User{}, uid)
 	if result.Error != nil {
 
 	}
