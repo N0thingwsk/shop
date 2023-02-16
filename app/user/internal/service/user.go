@@ -18,7 +18,7 @@ func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 }
 
 func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.UserInfoReply, error) {
-	user, err := u.uc.GetUserinfo(ctx, int(ctx.Value("userid").(float64)))
+	user, err := u.uc.GetUserinfo(ctx)
 	if err != nil {
 		return &v1.UserInfoReply{}, err
 	}
@@ -26,7 +26,7 @@ func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.U
 		User: &v1.UserInfoReply_User{
 			Mobile:   user.Mobile,
 			NikeName: user.NickName,
-			Birthday: user.Birthday.Format("2006-01-02 15:04:05"),
+			Birthday: user.Birthday,
 			Gender:   user.Gender,
 		},
 	}, nil

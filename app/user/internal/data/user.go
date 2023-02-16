@@ -57,7 +57,7 @@ func (r *userRepo) GetUserinfo(ctx context.Context, uid int) (biz.User, error) {
 	} else if err != nil {
 		return biz.User{}, err
 	}
-	if err := r.data.rc.Expire(ctx, "1", time.Second*60).Err(); err != nil {
+	if err := r.data.rc.Expire(ctx, strconv.Itoa(uid), time.Second*60).Err(); err != nil {
 		log.Error("GetUserinfo err: redis time reset fail")
 	}
 	var info v1.UserInfoReply
@@ -73,15 +73,19 @@ func (r *userRepo) GetUserinfo(ctx context.Context, uid int) (biz.User, error) {
 	}, nil
 }
 
-func (r *userRepo) CreateUser(ctx context.Context, user *biz.User) (*biz.User, error) {
-	tx := r.data.db.Begin()
-	result := tx.Where("mobile = ?", user.Mobile)
-	if result.RowsAffected == 1 {
-		log.Error("CreateUser err: user already exists")
-		tx.Rollback()
-		return &biz.User{}, errors.New("user already exists")
+// GetUserCache 获取用户缓存
+func (r *userRepo) GetUserCache(ctx context.Context, key string) ([]byte, error) {
+	cache, err := r.data.rc.Get(ctx, key).Bytes()
+	if err != nil {
+		return nil, err
 	}
-	result = tx.Create(&biz.User{
+	return cache, nil
+}
+
+// CreateUser 创建用户
+func (r *userRepo) CreateUser(ctx context.Context, user biz.User) error {
+	tx := r.data.db.Begin()
+	result := tx.Create(&biz.User{
 		Mobile:   user.Mobile,
 		Password: user.Password,
 		NickName: fmt.Sprintf("用户%s", user.Mobile),
@@ -90,32 +94,29 @@ func (r *userRepo) CreateUser(ctx context.Context, user *biz.User) (*biz.User, e
 	})
 	if result.Error != nil {
 		tx.Rollback()
-		return &biz.User{}, result.Error
+		return result.Error
 	}
 	tx.Commit()
-	return biz.User{
-		Mobile:   user.Mobile,
-		NickName: fmt.Sprintf("用户%s", user.Mobile),
-		Birthday: user.Birthday,
-		Gender:   "男",
-	}, nil
+	return nil
 }
 
-func (r *userRepo) UpdateUser(ctx context.Context, user *biz.User) (*biz.User, error) {
+// UpdateUser 更新用户
+func (r *userRepo) UpdateUser(ctx context.Context, user biz.User) error {
 	tx := r.data.db.Begin()
 	result := tx.Model(&biz.User{}).Where("id = ?", user.ID).Updates(&user)
 	if result.Error != nil {
 		tx.Rollback()
-		return biz.User{}, errors.New("NickName更新失败")
+		return errors.New("update err:" + result.Error.Error())
 	}
 	tx.Commit()
-	return user, nil
+	return nil
 }
 
-func (r *userRepo) DeleteUser(ctx context.Context, uid int) (biz.User, error) {
+// DeleteUser 删除用户
+func (r *userRepo) DeleteUser(ctx context.Context, uid int) error {
 	result := r.data.db.Delete(&biz.User{}, uid)
 	if result.Error != nil {
-
+		return result.Error
 	}
-	return biz.User{}, nil
+	return nil
 }

@@ -3,8 +3,10 @@ package biz
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-redis/redis/v9"
 	"gorm.io/gorm"
 	"shop/app/user/internal/conf"
+	"strconv"
 )
 
 //var (
@@ -24,9 +26,10 @@ type User struct {
 
 type UserRepo interface {
 	GetUserinfo(context.Context, int) (User, error)
-	CreateUser(context.Context, *User) (*User, error)
-	UpdateUser(context.Context, *User) (*User, error)
-	DeleteUser(context.Context, int) (User, error)
+	GetUserCache(context.Context, string) ([]byte, error)
+	CreateUser(context.Context, User) error
+	UpdateUser(context.Context, User) error
+	DeleteUser(context.Context, int) error
 }
 
 type UserUsecase struct {
@@ -40,11 +43,32 @@ func NewUserUsecase(repo UserRepo, c *conf.Server, logger log.Logger) *UserUseca
 }
 
 func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
-	user, err := u.repo.GetUserinfo(ctx, User{Model: gorm.Model{ID: uint(id)}})
-	if err != nil {
-		return User{}, err
+	cache, err := u.repo.GetUserCache(ctx, strconv.Itoa(id))
+	if err == redis.Nil {
+		log.Debug("[UID]:", ctx.Value("id"), " err: redis data is nil")
+		userinfo, err := u.repo.GetUserinfo(ctx, ctx.Value("id").(int))
+		if err != nil {
+			return User{}, err
+		}
+		return userinfo, nil
+	} else if err != nil {
+		log.Debug("[UID]:", ctx.Value("id"), " err: ", err.Error())
+		userinfo, err := u.repo.GetUserinfo(ctx, ctx.Value("id").(int))
+		if err != nil {
+			return User{}, err
+		}
+		return userinfo, nil
 	}
-	return user, nil
+	info, err := Unmarshal(cache)
+	if err != nil {
+		log.Debug("[UID]:", ctx.Value("id"), " err: proto Unmarshal error")
+		userinfo, err := u.repo.GetUserinfo(ctx, ctx.Value("id").(int))
+		if err != nil {
+			return User{}, err
+		}
+		return userinfo, nil
+	}
+	return info, nil
 }
 
 //func (u *UserUsecase) LoginUser(ctx context.Context, user User) (string, error) {
