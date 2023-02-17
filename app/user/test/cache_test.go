@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm/schema"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/biz"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -59,7 +60,7 @@ func TestCache(t *testing.T) {
 }
 
 func TestMysql(t *testing.T) {
-	addr := "root:123456@tcp(127.0.0.1:3306)/shop_user?charset=utf8mb4&parseTime=True&loc=Local"
+	addr := "root:123456@tcp(127.0.0.1:3307)/shop_user?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(addr), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
@@ -72,14 +73,14 @@ func TestMysql(t *testing.T) {
 	if err != nil {
 		panic(err.Error())
 	}
-	info := biz.User{
-		Model: gorm.Model{
-			ID: 1,
-		},
-		Gender: "10",
-	}
-	result := db.Save(&info)
-	if result.Error != nil {
-		log.Error(result.Error)
+	for i := 0; i <= 20; i++ {
+		db.Create(&biz.User{
+			Mobile:   "111111111" + strconv.Itoa(i),
+			Password: "test" + strconv.Itoa(i),
+			NickName: "test" + strconv.Itoa(i),
+			Birthday: time.Now().String(),
+			Gender:   "男",
+			Role:     i,
+		})
 	}
 }

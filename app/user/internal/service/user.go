@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/biz"
@@ -18,7 +19,8 @@ func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 }
 
 func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.UserInfoReply, error) {
-	user, err := u.uc.GetUserinfo(ctx)
+	fmt.Println("test")
+	user, err := u.uc.GetUserinfo(ctx, 1)
 	if err != nil {
 		return &v1.UserInfoReply{}, err
 	}
@@ -46,7 +48,7 @@ func (u *UserService) LoginUser(ctx context.Context, in *v1.LoginRequest) (*v1.L
 	//	},
 	//	Token: token,
 	//}, nil
-	return nil, nil
+	return &v1.LoginReply{}, nil
 }
 
 func (u *UserService) RegisterUser(ctx context.Context, in *v1.RegisterRequest) (*v1.UserInfoReply, error) {
@@ -62,7 +64,7 @@ func (u *UserService) RegisterUser(ctx context.Context, in *v1.RegisterRequest) 
 	//		Mobile: user.Mobile,
 	//	},
 	//}, nil
-	return nil, nil
+	return &v1.UserInfoReply{}, nil
 }
 
 func (u *UserService) UpdateUserNickName(ctx context.Context, in *v1.UpdateNickNameRequest) (*v1.UserInfoReply, error) {
@@ -78,7 +80,7 @@ func (u *UserService) UpdateUserNickName(ctx context.Context, in *v1.UpdateNickN
 	//return &v1.UserInfoReply{User: &v1.UserInfoReply_User{
 	//	NikeName: user.NickName,
 	//}}, nil
-	return nil, nil
+	return &v1.UserInfoReply{}, nil
 }
 
 func (u *UserService) UpdateUserPassword(ctx context.Context, in *v1.UpdatePasswordRequest) (*v1.UserInfoReply, error) {
@@ -95,7 +97,7 @@ func (u *UserService) UpdateUserPassword(ctx context.Context, in *v1.UpdatePassw
 	//	Mobile: user.Mobile,
 	//},
 	//}, nil
-	return nil, nil
+	return &v1.UserInfoReply{}, nil
 }
 
 func (u *UserService) UpdateUserBirthday(ctx context.Context, in *v1.UpdateBirthdayRequest) (*v1.UserInfoReply, error) {
@@ -116,7 +118,7 @@ func (u *UserService) UpdateUserBirthday(ctx context.Context, in *v1.UpdateBirth
 	//	Mobile: user.Mobile,
 	//},
 	//}, nil
-	return nil, nil
+	return &v1.UserInfoReply{}, nil
 }
 
 func (u *UserService) UpdateUserGender(ctx context.Context, in *v1.UpdateGenderRequest) (*v1.UserInfoReply, error) {
@@ -133,15 +135,15 @@ func (u *UserService) UpdateUserGender(ctx context.Context, in *v1.UpdateGenderR
 	//	Mobile: user.Mobile,
 	//},
 	//}, nil
-	return nil, nil
+	return &v1.UserInfoReply{}, nil
 }
 
 // DeleteUser TODO 注销账号待定
 func (u *UserService) DeleteUser(ctx context.Context, in *v1.DeleteRequest) (*v1.UserInfoReply, error) {
-	return nil, nil
+	return &v1.UserInfoReply{}, nil
 }
 
 // SendVerificationCode TODO 短信发送待定
 func (u *UserService) SendVerificationCode(ctx context.Context, in *v1.SendCodeRequest) (*v1.SendCodeReply, error) {
-	return nil, nil
+	return &v1.SendCodeReply{}, nil
 }

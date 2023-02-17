@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v9"
 	"gorm.io/gorm"
@@ -19,7 +20,7 @@ type User struct {
 	Mobile   string `gorm:"index:idx_mobile;unique;type:varchar(11);not null"`
 	Password string `gorm:"type:varchar(100);not null"`
 	NickName string `gorm:"type:varchar(20)"`
-	Birthday string `gorm:"type:varchar(20)"`
+	Birthday string `gorm:"type:varchar(200)"`
 	Gender   string `gorm:"column:gender;default:male;type:varchar(6)"`
 	Role     int    `gorm:"column:role;default:1;type:int"`
 }
@@ -43,6 +44,8 @@ func NewUserUsecase(repo UserRepo, c *conf.Server, logger log.Logger) *UserUseca
 }
 
 func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
+	fmt.Println("111")
+	log.Debug("UID", id)
 	cache, err := u.repo.GetUserCache(ctx, strconv.Itoa(id))
 	if err == redis.Nil {
 		log.Debug("[UID]:", ctx.Value("id"), " err: redis data is nil")
