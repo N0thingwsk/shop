@@ -8,73 +8,18 @@ option go_package = "shop/api/user/v1;v1";
 
 service User {
 
-	rpc GetUser (GetUserRequest) returns (UserInfoReply) {
-		option (google.api.http) = {
-			post: "/v1/user/getuser"
-			body: "*"
-		};
-	}
-
-	rpc LoginUser (LoginRequest) returns (LoginReply) {
-		option (google.api.http) = {
-			post: "/v1/user/login",
-			body: "*"
-		};
-	}
-
-	rpc RegisterUser (RegisterRequest) returns (UserInfoReply) {
-		option (google.api.http) = {
-			post: "/v1/user/register",
-			body: "*"
-		};
-	}
-
-	rpc UpdateUserNickName(UpdateNickNameRequest) returns (UserInfoReply){
-		option (google.api.http) = {
-			post: "/v1/user/update/nickname",
-			body: "*"
-		};
-	}
-	rpc UpdateUserPassword(UpdatePasswordRequest) returns (UserInfoReply){
-		option (google.api.http) = {
-			post: "/v1/user/update/password",
-			body: "*"
-		};
-	}
-	rpc UpdateUserBirthday(UpdateBirthdayRequest) returns (UserInfoReply){
-		option (google.api.http) = {
-			post: "/v1/user/update/birthday",
-			body: "*"
-		};
-	}
-	rpc UpdateUserGender(UpdateGenderRequest) returns (UserInfoReply){
-		option (google.api.http) = {
-			post: "/v1/user/update/gender",
-			body: "*"
-		};
-	}
-
-	rpc DeleteUser(DeleteRequest) returns (UserInfoReply){
-		option (google.api.http) = {
-			post: "/v1/user/delete",
-			body: "*"
-		};
-	}
-
-	rpc SendVerificationCode(SendCodeRequest) returns (SendCodeReply) {
-		option (google.api.http) = {
-			post: "/v1/user/sendcode",
-			body: "*"
-		};
-	}
+	rpc GetUser (GetUserRequest) returns (UserInfoReply) {}
+	rpc LoginUser (LoginRequest) returns (LoginReply) {}
+	rpc RegisterUser (RegisterRequest) returns (UserInfoReply) {}
+	rpc UpdateUserNickName(UpdateNickNameRequest) returns (UserInfoReply){}
+	rpc UpdateUserPassword(UpdatePasswordRequest) returns (UserInfoReply){}
+	rpc UpdateUserBirthday(UpdateBirthdayRequest) returns (UserInfoReply){}
+	rpc UpdateUserGender(UpdateGenderRequest) returns (UserInfoReply){}
+	rpc DeleteUser(DeleteRequest) returns (UserInfoReply){}
+	rpc SendVerificationCode(SendCodeRequest) returns (SendCodeReply) {}
 }
 
-message GetUserRequest {
-	message User {
-		string token = 1;
-	}
-	User user = 1;
-}
+message GetUserRequest {}
 
 message LoginRequest {
 	message User {

@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/gorilla/handlers"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/conf"
 	"shop/app/user/internal/service"
@@ -32,13 +33,13 @@ func NewHTTPServer(c *conf.Server, user *service.UserService, logger log.Logger)
 			recovery.Recovery(),
 			//selector.Server(auth.JWTAuth(c.Token.Secret)).Match(NewSkipRoutersMatcher()).Build(),
 		),
-		//http.Filter(
-		//	handlers.CORS(
-		//		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
-		//		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"}),
-		//		handlers.AllowedOrigins([]string{"*"}),
-		//	),
-		//),
+		http.Filter(
+			handlers.CORS(
+				handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+				handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"}),
+				handlers.AllowedOrigins([]string{"*"}),
+			),
+		),
 	}
 	if c.Http.Network != "" {
 		opts = append(opts, http.Network(c.Http.Network))

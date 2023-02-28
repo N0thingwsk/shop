@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-redis/redis/v9"
 	"google.golang.org/protobuf/proto"
 	v1 "shop/api/user/v1"
 	"shop/app/user/internal/biz"
@@ -27,50 +26,31 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 
 // GetUserinfo 获取用户信息
 func (r *userRepo) GetUserinfo(ctx context.Context, uid int) (biz.User, error) {
-	cache, err := r.data.rc.Get(ctx, strconv.Itoa(uid)).Bytes()
-	if err == redis.Nil {
-		user := biz.User{}
-		result := r.data.db.Where("id = ?", uid).First(&user)
-		if result.RowsAffected == 0 {
-			return biz.User{}, errors.New("GetUserinfo err: user is nil")
-		}
-		if result.Error != nil {
-			return biz.User{}, errors.New("GetUserinfo err: user get fail")
-		}
-		info := v1.UserInfoReply{
-			User: &v1.UserInfoReply_User{
-				Mobile:   user.Mobile,
-				NikeName: user.NickName,
-				Birthday: user.Birthday,
-				Gender:   user.Gender,
-			},
-		}
-		marshal, err := proto.Marshal(&info)
-		if err != nil {
-			log.Error("GetUserinfo err: protobuf marshal err")
-		}
-		err = r.data.rc.Set(ctx, strconv.Itoa(int(user.ID)), marshal, time.Second*60).Err()
-		if err != nil {
-			log.Error("GetUserinfo err: redis write err", err.Error())
-		}
-		return user, nil
-	} else if err != nil {
-		return biz.User{}, err
+	user := biz.User{}
+	result := r.data.db.Where("id = ?", uid).First(&user)
+	if result.RowsAffected == 0 {
+		return biz.User{}, errors.New("GetUserinfo err: user is nil")
 	}
-	if err := r.data.rc.Expire(ctx, strconv.Itoa(uid), time.Second*60).Err(); err != nil {
-		log.Error("GetUserinfo err: redis time reset fail")
+	if result.Error != nil {
+		return biz.User{}, errors.New("GetUserinfo err: user get fail")
 	}
-	var info v1.UserInfoReply
-	err = proto.Unmarshal(cache, &info)
+	info := v1.UserInfoReply{
+		User: &v1.UserInfoReply_User{
+			Mobile:   user.Mobile,
+			NikeName: user.NickName,
+			Birthday: user.Birthday,
+			Gender:   user.Gender,
+		},
+	}
+	marshal, err := proto.Marshal(&info)
 	if err != nil {
-		return biz.User{}, errors.New("GetUserinfo err: protobuf unmarshal err")
+		log.Error("GetUserinfo err: protobuf marshal err")
 	}
-	return biz.User{
-		Mobile:   info.User.GetMobile(),
-		NickName: info.User.GetNikeName(),
-		Birthday: info.User.GetBirthday(),
-		Gender:   info.User.GetGender(),
-	}, nil
+	err = r.data.rc.Set(ctx, strconv.Itoa(int(user.ID)), marshal, time.Second*60).Err()
+	if err != nil {
+		log.Error("GetUserinfo err: redis write err", err.Error())
+	}
+	return user, nil
 }
 
 // GetUserCache 获取用户缓存
@@ -79,7 +59,14 @@ func (r *userRepo) GetUserCache(ctx context.Context, key string) ([]byte, error)
 	if err != nil {
 		return nil, err
 	}
+	if err := r.data.rc.Expire(ctx, key, time.Second*60).Err(); err != nil {
+		log.Error("GetUserinfo err: redis time reset fail")
+	}
 	return cache, nil
+}
+
+func (r *userRepo) GetUserInfoUserName(c) {
+
 }
 
 // CreateUser 创建用户

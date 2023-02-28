@@ -2,12 +2,15 @@ package biz
 
 import (
 	"context"
-	"fmt"
+	"crypto/sha512"
+	"github.com/anaskhan96/go-password-encoder"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v9"
 	"gorm.io/gorm"
 	"shop/app/user/internal/conf"
+	"shop/app/user/internal/pkg/middleware/auth"
 	"strconv"
+	"strings"
 )
 
 //var (
@@ -26,8 +29,9 @@ type User struct {
 }
 
 type UserRepo interface {
-	GetUserinfo(context.Context, int) (User, error)
+	GetUserInfo(context.Context, int) (User, error)
 	GetUserCache(context.Context, string) ([]byte, error)
+    GetUserInfoUserName(context.Context, string) (User, error)
 	CreateUser(context.Context, User) error
 	UpdateUser(context.Context, User) error
 	DeleteUser(context.Context, int) error
@@ -44,19 +48,17 @@ func NewUserUsecase(repo UserRepo, c *conf.Server, logger log.Logger) *UserUseca
 }
 
 func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
-	fmt.Println("111")
-	log.Debug("UID", id)
 	cache, err := u.repo.GetUserCache(ctx, strconv.Itoa(id))
 	if err == redis.Nil {
-		log.Debug("[UID]:", ctx.Value("id"), " err: redis data is nil")
-		userinfo, err := u.repo.GetUserinfo(ctx, ctx.Value("id").(int))
+		log.Error("[UID]:", id, " err: redis data is nil")
+		userinfo, err := u.repo.GetUserInfo(ctx, id)
 		if err != nil {
 			return User{}, err
 		}
 		return userinfo, nil
 	} else if err != nil {
-		log.Debug("[UID]:", ctx.Value("id"), " err: ", err.Error())
-		userinfo, err := u.repo.GetUserinfo(ctx, ctx.Value("id").(int))
+		log.Error("[UID]:", id, " err: ", err.Error())
+		userinfo, err := u.repo.GetUserInfo(ctx, id)
 		if err != nil {
 			return User{}, err
 		}
@@ -64,8 +66,8 @@ func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
 	}
 	info, err := Unmarshal(cache)
 	if err != nil {
-		log.Debug("[UID]:", ctx.Value("id"), " err: proto Unmarshal error")
-		userinfo, err := u.repo.GetUserinfo(ctx, ctx.Value("id").(int))
+		log.Debug("[UID]:", id, " err: proto Unmarshal error")
+		userinfo, err := u.repo.GetUserInfo(ctx, id)
 		if err != nil {
 			return User{}, err
 		}
@@ -74,20 +76,21 @@ func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
 	return info, nil
 }
 
-//func (u *UserUsecase) LoginUser(ctx context.Context, user User) (string, error) {
-//	use, err := u.repo.LoginUser(ctx, user)
-//	if err != nil {
-//		return "", err
-//	}
-//	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
-//	passwordInfo := strings.Split(use.Password, "$")
-//	isPass := password.Verify(user.Password, passwordInfo[2], passwordInfo[3], options)
-//	if isPass != true {
-//		return "", errors.New("密码错误")
-//	}
-//	return auth.GenerateToken(u.c.Token.Secret, use.ID), nil
-//}
-//
+func (u *UserUsecase) LoginUser(ctx context.Context, user User) (string, error) {
+    u.repo.
+	use, err := u.repo.LoginUser(ctx, user)
+	if err != nil {
+		return "", err
+	}
+	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
+	passwordInfo := strings.Split(use.Password, "$")
+	isPass := password.Verify(user.Password, passwordInfo[2], passwordInfo[3], options)
+	if isPass != true {
+		return "", errors.New("密码错误")
+	}
+	return auth.GenerateToken(u.c.Token.Secret, use.ID), nil
+}
+
 //func (u *UserUsecase) CreateUser(ctx context.Context, user User) (User, error) {
 //	options := &password.Options{SaltLen: 16, Iterations: 100, KeyLen: 32, HashFunction: sha512.New}
 //	salt, encodedPwd := password.Encode(user.Password, options)

@@ -728,14 +728,7 @@ components:
                     type: string
         api.user.v1.GetUserRequest:
             type: object
-            properties:
-                user:
-                    $ref: '#/components/schemas/api.user.v1.GetUserRequest_User'
-        api.user.v1.GetUserRequest_User:
-            type: object
-            properties:
-                token:
-                    type: string
+            properties: {}
         api.user.v1.LoginReply:
             type: object
             properties:
