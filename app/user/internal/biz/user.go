@@ -18,6 +18,7 @@ import (
 //	ErrUserNotFound = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
 //)
 
+// User 用户
 type User struct {
 	gorm.Model
 	Mobile   string `gorm:"index:idx_mobile;unique;type:varchar(11);not null"`
@@ -28,25 +29,29 @@ type User struct {
 	Role     int    `gorm:"column:role;default:1;type:int"`
 }
 
+// UserRepo 用户仓库
 type UserRepo interface {
 	GetUserInfo(context.Context, int) (User, error)
 	GetUserCache(context.Context, string) ([]byte, error)
-    GetUserInfoUserName(context.Context, string) (User, error)
+	GetUserInfoUserName(context.Context, string) (User, error)
 	CreateUser(context.Context, User) error
 	UpdateUser(context.Context, User) error
 	DeleteUser(context.Context, int) error
 }
 
+// UserUsecase 用户用例
 type UserUsecase struct {
 	repo UserRepo
 	c    *conf.Server
 	log  *log.Helper
 }
 
+// NewUserUsecase new a user usecase.
 func NewUserUsecase(repo UserRepo, c *conf.Server, logger log.Logger) *UserUsecase {
 	return &UserUsecase{repo: repo, c: c, log: log.NewHelper(logger)}
 }
 
+// GetUserinfo 获取用户信息
 func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
 	cache, err := u.repo.GetUserCache(ctx, strconv.Itoa(id))
 	if err == redis.Nil {
@@ -76,8 +81,12 @@ func (u *UserUsecase) GetUserinfo(ctx context.Context, id int) (User, error) {
 	return info, nil
 }
 
+// LoginUser 登录
 func (u *UserUsecase) LoginUser(ctx context.Context, user User) (string, error) {
-    u.repo.
+	name, err := u.repo.GetUserInfoUserName(ctx, user.Mobile)
+	if err != nil {
+		return "", err
+	}
 	use, err := u.repo.LoginUser(ctx, user)
 	if err != nil {
 		return "", err

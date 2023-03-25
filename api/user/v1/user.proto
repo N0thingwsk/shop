@@ -7,99 +7,47 @@ import "google/api/annotations.proto";
 option go_package = "shop/api/user/v1;v1";
 
 service User {
-
-	rpc GetUser (GetUserRequest) returns (UserInfoReply) {}
-	rpc LoginUser (LoginRequest) returns (LoginReply) {}
-	rpc RegisterUser (RegisterRequest) returns (UserInfoReply) {}
+	rpc GetUserInfoById (GetUserByIdRequest) returns (UserInfoReply) {}
+	rpc GetUserInfoByMobile (GetUserByMobileRequest) returns (UserInfoReply) {}
+	rpc CreateUser (CreateRequest) returns (UserInfoReply) {}
 	rpc UpdateUserNickName(UpdateNickNameRequest) returns (UserInfoReply){}
-	rpc UpdateUserPassword(UpdatePasswordRequest) returns (UserInfoReply){}
-	rpc UpdateUserBirthday(UpdateBirthdayRequest) returns (UserInfoReply){}
-	rpc UpdateUserGender(UpdateGenderRequest) returns (UserInfoReply){}
 	rpc DeleteUser(DeleteRequest) returns (UserInfoReply){}
-	rpc SendVerificationCode(SendCodeRequest) returns (SendCodeReply) {}
 }
 
-message GetUserRequest {}
+message GetUserByIdRequest {
+	message User {
+		string id = 1;
+	}
+	User user = 1;
+}
 
-message LoginRequest {
+message GetUserByMobileRequest {
+	message User {
+		string mobile = 1;
+	}
+	User user = 1;
+}
+
+message CreateRequest {
 	message User {
 		string mobile = 1;
 		string password = 2;
-		string code = 3;
-	}
-	User user = 1;
-}
-
-message RegisterRequest {
-	message User {
-		string mobile = 1;
-		string password = 2;
-		string code= 3;
-	}
-	User user = 1;
-}
-
-message UpdateGenderRequest {
-	message User {
-		string gender = 1;
-	}
-	User user = 1;
-}
-
-message UpdatePasswordRequest {
-	message User {
-		string password = 1;
 	}
 	User user = 1;
 }
 
 message UpdateNickNameRequest {
 	message User {
-		string nikename = 1;
-	}
-	User user = 1;
-}
-
-message UpdateBirthdayRequest {
-	message User {
-		string birthday = 1;
+		string id = 1;
+		string nick_name = 2;
 	}
 	User user = 1;
 }
 
 message DeleteRequest {
 	message User {
-		string token = 1;
+		string id = 1;
 	}
 	User user = 1;
 }
 
-message SendCodeRequest {
-	message User {
-		string mobile = 1;
-	}
-	User user = 1;
-}
-
-message SendCodeReply {
-	string code = 1;
-}
-
-message LoginReply {
-	message User {
-		string mobile = 1;
-		string nike_name = 2;
-	}
-	User user = 1;
-	string token = 2;
-}
-
-message UserInfoReply {
-	message User {
-		string mobile = 1;
-		string nike_name = 2;
-		string birthday = 3;
-		string gender = 4;
-	}
-	User user = 1;
-}

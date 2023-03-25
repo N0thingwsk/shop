@@ -35,7 +35,7 @@ func NewDB(c *conf.Data) *gorm.DB {
 		},
 	})
 	if err != nil {
-		panic(err.Error())
+		panic[string](err.Error())
 	}
 	return db
 }
@@ -43,7 +43,7 @@ func NewDB(c *conf.Data) *gorm.DB {
 func NewRedis(c *conf.Data) *redis.Client {
 	rc := redis.NewClient(&redis.Options{
 		Addr:     c.Redis.Addr,
-		Password: "",
+		Password: c.Redis.Password,
 		DB:       0,
 	})
 	if result, err := rc.Ping(context.Background()).Result(); err != nil {
