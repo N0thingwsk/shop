@@ -10,7 +10,7 @@ service User {
 	rpc GetUserInfoById (GetUserByIdRequest) returns (UserInfoReply) {}
 	rpc GetUserInfoByMobile (GetUserByMobileRequest) returns (UserInfoReply) {}
 	rpc CreateUser (CreateRequest) returns (UserInfoReply) {}
-	rpc UpdateUserNickName(UpdateNickNameRequest) returns (UserInfoReply){}
+	rpc UpdateUserInfoName(UpdateUserinfoRequest) returns (UserInfoReply){}
 	rpc DeleteUser(DeleteRequest) returns (UserInfoReply){}
 }
 
@@ -36,7 +36,7 @@ message CreateRequest {
 	User user = 1;
 }
 
-message UpdateNickNameRequest {
+message UpdateUserinfoRequest {
 	message User {
 		string id = 1;
 		string nick_name = 2;
@@ -49,5 +49,20 @@ message DeleteRequest {
 		string id = 1;
 	}
 	User user = 1;
+}
+
+message UserInfoReply {
+	message User {
+		string id = 1;
+		string mobile = 2;
+		string nickname = 3;
+		string password = 4;
+		string birthday = 5;
+		string gender = 6;
+		string role = 7;
+	}
+	int32 code = 1;
+	User user = 2;
+	string msg = 3;
 }
 

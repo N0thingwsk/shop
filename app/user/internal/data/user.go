@@ -24,6 +24,32 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 	}
 }
 
+// GetUserInfoById Id获取用户信息
+func (r *userRepo) GetUserInfoById(ctx context.Context, uid int) (biz.User, error) {
+	user := biz.User{}
+	result := r.data.db.Where("id = ?", uid).First(&user)
+	if result.RowsAffected == 0 {
+		return biz.User{}, errors.New("GetUserInfoById err: user is nil")
+	}
+	if result.Error != nil {
+		return biz.User{}, errors.New("GetUserInfoById err: user get fail")
+	}
+	return user, nil
+}
+
+// GetUserInfoByMobile 手机号获取用户信息
+func (r *userRepo) GetUserInfoByMobile(ctx context.Context, mobile string) (biz.User, error) {
+	user := biz.User{}
+	result := r.data.db.Where("mobile = ?", mobile).First(&user)
+	if result.RowsAffected == 0 {
+		return biz.User{}, errors.New("GetUserinfoByMobile err: user is nil")
+	}
+	if result.Error != nil {
+		return biz.User{}, errors.New("GetUserinfoByMobile err: user get fail")
+	}
+	return user, nil
+}
+
 // GetUserinfo 获取用户信息
 func (r *userRepo) GetUserinfo(ctx context.Context, uid int) (biz.User, error) {
 	user := biz.User{}
@@ -51,22 +77,6 @@ func (r *userRepo) GetUserinfo(ctx context.Context, uid int) (biz.User, error) {
 		log.Error("GetUserinfo err: redis write err", err.Error())
 	}
 	return user, nil
-}
-
-// GetUserCache 获取用户缓存
-func (r *userRepo) GetUserCache(ctx context.Context, key string) ([]byte, error) {
-	cache, err := r.data.rc.Get(ctx, key).Bytes()
-	if err != nil {
-		return nil, err
-	}
-	if err := r.data.rc.Expire(ctx, key, time.Second*60).Err(); err != nil {
-		log.Error("GetUserinfo err: redis time reset fail")
-	}
-	return cache, nil
-}
-
-func (r *userRepo) GetUserInfoUserName(c) {
-
 }
 
 // CreateUser 创建用户
