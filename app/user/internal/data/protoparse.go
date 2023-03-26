@@ -8,7 +8,9 @@ import (
 )
 
 // ProtoMarshal proto序列化
-func (r *userRepo) ProtoMarshal(ctx context.Context, user biz.User) ([]byte, error) {
+func (r *userRepo) ProtoMarshal[T any](ctx context.Context, user T) ([]byte, error) {
+	//q: go泛型语法
+	//a:
 	info := &v1.UserInfoReply{
 		User: &v1.UserInfoReply_User{
 			Mobile:   user.Mobile,
@@ -17,7 +19,7 @@ func (r *userRepo) ProtoMarshal(ctx context.Context, user biz.User) ([]byte, err
 			Gender:   user.Gender,
 		},
 	}
-	marshal, err := proto.Marshal(info)
+	marshal, err := proto.Marshal(user)
 	if err != nil {
 		return nil, err
 	}
